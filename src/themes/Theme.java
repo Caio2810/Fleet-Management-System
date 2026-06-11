@@ -18,5 +18,9 @@ public class Theme {
 
     public static final Color SUBTITLE = new Color(148, 148, 148);
 
+    public static final Color SUBTITLE2 = new Color(110, 110, 110);
+
+    public static final Color CARDCOLOR = new Color(28, 27, 27);
+
 
 }

@@ -8,6 +8,7 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import modelos.classes.classes_visao.Model_Card;
+import themes.Theme;
 
 /**
  *
@@ -45,8 +46,8 @@ public class Card extends javax.swing.JPanel {
 
         setBackground(new java.awt.Color(220, 227, 238));
 
-        cardTitle.setBackground(new java.awt.Color(255, 255, 255));
-        cardTitle.setFont(new java.awt.Font("DecoType Naskh", 0, 24)); // NOI18N
+        cardTitle.setBackground(Theme.SUBTITLE);
+//        cardTitle.setFont(new java.awt.Font("DecoType Naskh", 0, 16)); // NOI18N
         cardTitle.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         cardTitle.setText("Title");
 
@@ -54,7 +55,7 @@ public class Card extends javax.swing.JPanel {
         cardValor.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         cardValor.setText("Valor");
 
-        cardDesc.setForeground(new java.awt.Color(255, 139, 0));
+        cardDesc.setForeground(Theme.SUBTITLE2);
         cardDesc.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         cardDesc.setText("desc");
 

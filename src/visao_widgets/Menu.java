@@ -28,9 +28,9 @@ public class Menu extends javax.swing.JPanel {
     public Menu() {
         initComponents();
 
-        setBackground(Theme.SIDEBAR);
+        setBackground(Theme.CARDCOLOR);
 
-        panelMenu.setBackground(Theme.SIDEBAR);
+        panelMenu.setBackground(Theme.CARDCOLOR);
 
         jLabel1.setForeground(Theme.SUBTITLE);
         jLabel4.setForeground(Theme.ACCENT);

@@ -8,8 +8,7 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.util.Locale;
-import javax.swing.SwingUtilities;
-import javax.swing.JDialog;
+import javax.swing.*;
 import java.awt.Frame; // <-- ADICIONADO ESTE IMPORT para o cast do JDialog
 
 import controle.ControladoraDespesas;
@@ -19,6 +18,7 @@ import java.util.ArrayList;
 import modelos.classes.Movimentacao;
 import modelos.classes.Veiculo;
 import modelos.classes.classes_visao.Model_Card;
+import themes.Theme;
 
 /**
  *
@@ -48,63 +48,88 @@ public class TelaHome extends javax.swing.JPanel {
         card2 = new visao_widgets.Card();
         formPageBorder1 = new visao_widgets.FormPageBorder();
         jLabel1 = new javax.swing.JLabel();
-        relatorio3 = new javax.swing.JButton();
-        relatorio4 = new javax.swing.JButton();
-        relatorio2 = new javax.swing.JButton();
-        relatorio1 = new javax.swing.JButton();
-        relatorio5 = new javax.swing.JButton();
-        relatorio6 = new javax.swing.JButton();
+        Icon icon = UIManager.getIcon("FileView.fileIcon");
 
-        setBackground(new java.awt.Color(248, 248, 248));
+        relatorio1 = new visao_widgets.ReportItem(
+                "Despesas por veículo",
+                icon);
 
-        card1.setForeground(new java.awt.Color(255, 255, 255));
+        relatorio2 = new visao_widgets.ReportItem(
+                "Soma geral das despesas de frota em um mês",
+                icon);
 
-        card2.setForeground(new java.awt.Color(255, 255, 255));
+        relatorio3 = new visao_widgets.ReportItem(
+                "Gastos com combustível em um mês",
+                icon);
 
-        formPageBorder1.setBackground(new java.awt.Color(255, 255, 255));
+        relatorio4 = new visao_widgets.ReportItem(
+                "Soma do IPVA de um ano da frota",
+                icon);
 
-        jLabel1.setFont(new java.awt.Font("DIN Alternate", 0, 48)); // NOI18N
-        jLabel1.setText("Relatórios");
+        relatorio5 = new visao_widgets.ReportItem(
+                "Listar veículos inativos",
+                icon);
 
-        relatorio3.setText("Total de gastos com combustível em um determinado mês");
-        relatorio3.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                relatorio3ActionPerformed(evt);
+        relatorio6 = new visao_widgets.ReportItem(
+                "Relatório das multas pagas por veículo em um ano",
+                icon);
+
+        setBackground(Theme.BACKGROUND);
+
+        card1.setForeground(Theme.CARDCOLOR);
+
+        card2.setForeground(Theme.CARDCOLOR);
+
+        formPageBorder1.setBackground(Theme.CARDCOLOR);
+
+        jLabel1.setFont(new java.awt.Font("DIN Alternate", 0, 24)); // NOI18N
+        jLabel1.setText("RELATÓRIOS");
+
+//        relatorio3.setText("Total de gastos com combustível em um determinado mês");
+        relatorio3.addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                relatorio3ActionPerformed(null);
             }
         });
 
-        relatorio4.setText("Somatório do IPVA de um determinado ano de toda a frota");
-        relatorio4.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                relatorio4ActionPerformed(evt);
+//        relatorio4.setText("Somatório do IPVA de um determinado ano de toda a frota");
+        relatorio4.addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                relatorio4ActionPerformed(null);
             }
         });
 
-        relatorio2.setText("Soma geral das despesas da frota em um determinado mês");
-        relatorio2.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                relatorio2ActionPerformed(evt);
+//        relatorio2.setText("Soma geral das despesas da frota em um determinado mês");
+        relatorio2.addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                relatorio2ActionPerformed(null);
             }
         });
 
-        relatorio1.setText("Despesas realizadas em um veículo");
-        relatorio1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                relatorio1ActionPerformed(evt);
+//        relatorio1.setText("Despesas realizadas em um veículo");
+        relatorio1.addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                relatorio1ActionPerformed(null);
             }
         });
 
-        relatorio5.setText("Listar todos os veículos inativos na frota");
-        relatorio5.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                relatorio5ActionPerformed(evt);
+//        relatorio5.setText("Listar todos os veículos inativos na frota");
+        relatorio5.addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                relatorio5ActionPerformed(null);
             }
         });
 
-        relatorio6.setText("Relatório das multas pagas por veículo em um determinado ano");
-        relatorio6.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                relatorio6ActionPerformed(evt);
+//        relatorio6.setText("Relatório das multas pagas por veículo em um determinado ano");
+        relatorio6.addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                relatorio6ActionPerformed(null);
             }
         });
 
@@ -316,7 +341,7 @@ public class TelaHome extends javax.swing.JPanel {
     private void carregadorDadosVeiculoDashboard() {
         try {
             String contadorVeiculosAtivos = controladoraVeiculos.contadorVeiculosAtivos();
-            card1.setData(new Model_Card("Total de Veículos", contadorVeiculosAtivos,
+            card1.setData(new Model_Card("TOTAL DE VEÍCULOS", contadorVeiculosAtivos,
                     "desde o início"));
         } catch (Exception erro) {
             System.out.println("Erro ao carregar dados de veículos para o dashboard: " + erro.getMessage());
@@ -331,7 +356,7 @@ public class TelaHome extends javax.swing.JPanel {
 
             String valorFormatado = "R$ " + valorTemporario.replace('.', ',');
 
-            card2.setData(new Model_Card("Total de Despesas", valorFormatado, "desde o início"));
+            card2.setData(new Model_Card("TOTAL DE DESPESAS", valorFormatado, "desde o início"));
         } catch (Exception erro) {
             System.out.println("Erro ao carregar dados de veículos para o dashboard: " + erro.getMessage());
             card2.setData(new Model_Card("Despesas", "0", "Sem dados obtidos"));
@@ -348,11 +373,11 @@ public class TelaHome extends javax.swing.JPanel {
     private visao_widgets.Card card2;
     private visao_widgets.FormPageBorder formPageBorder1;
     private javax.swing.JLabel jLabel1;
-    private javax.swing.JButton relatorio1;
-    private javax.swing.JButton relatorio2;
-    private javax.swing.JButton relatorio3;
-    private javax.swing.JButton relatorio4;
-    private javax.swing.JButton relatorio5;
-    private javax.swing.JButton relatorio6;
+    private visao_widgets.ReportItem relatorio1;
+    private visao_widgets.ReportItem relatorio2;
+    private visao_widgets.ReportItem relatorio3;
+    private visao_widgets.ReportItem relatorio4;
+    private visao_widgets.ReportItem relatorio5;
+    private visao_widgets.ReportItem relatorio6;
     // End of variables declaration//GEN-END:variables
 }
