@@ -21,13 +21,13 @@ public class ReportItem extends JPanel {
         title = new JLabel(text);
         arrow = new JLabel(">");
 
-        icon.setForeground(Theme.ACCENT);
+        icon.setForeground(Theme.SUBTITLE);
 
-        title.setForeground(Theme.TEXT);
-        title.setFont(new java.awt.Font(".AppleSystemUIFont", 0, 14));
+        title.setForeground(Theme.ACCENT2);
+        title.setFont(new java.awt.Font(".DIN Alternate", 0, 14));
 
-        arrow.setForeground(Theme.SUBTITLE);
-        arrow.setFont(new java.awt.Font(".AppleSystemUIFont", 0, 12));
+        arrow.setForeground(Theme.SUBTITLE2);
+        arrow.setFont(new java.awt.Font(".DIN Alternate", 0, 12));
 
         add(icon, BorderLayout.WEST);
         add(title, BorderLayout.CENTER);
