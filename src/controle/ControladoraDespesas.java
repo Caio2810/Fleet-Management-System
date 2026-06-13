@@ -1,24 +1,13 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package controle;
 
+import estruturas.ListaEncadeada;
 import modelos.classes.TipoDeDespesa;
 import persistencia.TipoDeDespesasDAO;
-
-import java.util.ArrayList;
 import java.util.UUID;
-
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 
-/**
- *
- * @author caioaraujocunha
- */
 public class ControladoraDespesas {
-
     private TipoDeDespesasDAO dao;
 
     public ControladoraDespesas() {
@@ -27,7 +16,6 @@ public class ControladoraDespesas {
 
     private String gerarIdAleatorio() throws Exception {
         String uuid = UUID.randomUUID().toString().replace("-", "");
-
         try {
             return uuid.substring(0, 7).toUpperCase();
         } catch (Exception e) {
@@ -49,7 +37,7 @@ public class ControladoraDespesas {
     }
 
     public void carregarTabela(JTable tabela) throws Exception {
-        ArrayList<TipoDeDespesa> lista = dao.listarDespesas();
+        ListaEncadeada<TipoDeDespesa> lista = dao.listarDespesas();
 
         DefaultTableModel modeloTabela = (DefaultTableModel) tabela.getModel();
         modeloTabela.setRowCount(0);
@@ -86,13 +74,13 @@ public class ControladoraDespesas {
         return dao.buscarPorID(idDespesa);
     }
 
-    public ArrayList<TipoDeDespesa> listarDespesasPorVeiculo(String idVeiculo) throws Exception {
+    public ListaEncadeada<TipoDeDespesa> listarDespesasPorVeiculo(String idVeiculo) throws Exception {
         return dao.listarDespesasPorVeiculo(idVeiculo);
     }
 
     public String calcularTotalDespesas() throws Exception {
         try {
-            ArrayList<TipoDeDespesa> todasDespesas = dao.listarDespesas();
+            ListaEncadeada<TipoDeDespesa> todasDespesas = dao.listarDespesas();
             int contador = 0;
 
             for (TipoDeDespesa despesa : todasDespesas) {
@@ -105,5 +93,4 @@ public class ControladoraDespesas {
             throw new Exception(msg);
         }
     }
-
 }

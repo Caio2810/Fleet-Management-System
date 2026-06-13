@@ -1,29 +1,17 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package persistencia;
 
-import java.util.ArrayList;
-
+import estruturas.ListaEncadeada;
 import modelos.classes.Movimentacao;
 import modelos.classes.TipoDeDespesa;
 import modelos.interfaces.ITipoDeDespesasCRUD;
-// Bibliotecas para IO em arquivo texto
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.FileReader;
 import java.io.FileWriter;
 
-/**
- *
- * @author ejmcc
- */
 public class TipoDeDespesasDAO implements ITipoDeDespesasCRUD {
-    // Atributos
     private String nomeDoArquivoNoDisco = null;
 
-    // Metodo Construtor
     public TipoDeDespesasDAO() {
         nomeDoArquivoNoDisco = "./src/bancodedados/Despesas.txt";
     }
@@ -33,8 +21,7 @@ public class TipoDeDespesasDAO implements ITipoDeDespesasCRUD {
         try {
             FileWriter fw = new FileWriter(nomeDoArquivoNoDisco, true);
             BufferedWriter bw = new BufferedWriter(fw);
-            String str = tipoDeDespesa.getIdTipoDeDespesa() + ";";
-            str += tipoDeDespesa.getDescricao() + "\n";
+            String str = tipoDeDespesa.getIdTipoDeDespesa() + ";" + tipoDeDespesa.getDescricao() + "\n";
             bw.write(str);
             bw.close();
         } catch (Exception erro) {
@@ -44,9 +31,9 @@ public class TipoDeDespesasDAO implements ITipoDeDespesasCRUD {
     }
 
     @Override
-    public ArrayList<TipoDeDespesa> listarDespesas() throws Exception {
+    public ListaEncadeada<TipoDeDespesa> listarDespesas() throws Exception {
         try {
-            ArrayList<TipoDeDespesa> listaDeTiposDeDespesas = new ArrayList<>();
+            ListaEncadeada<TipoDeDespesa> listaDeTiposDeDespesas = new ListaEncadeada<>();
             FileReader fr = new FileReader(nomeDoArquivoNoDisco);
             BufferedReader br = new BufferedReader(fr);
             String linha = "";
@@ -55,7 +42,7 @@ public class TipoDeDespesasDAO implements ITipoDeDespesasCRUD {
                 String idTipoDeDespesaAux = vetorStr[0];
                 String descricao = vetorStr[1];
                 TipoDeDespesa objTipoDeDespesa = new TipoDeDespesa(idTipoDeDespesaAux, descricao);
-                listaDeTiposDeDespesas.add(objTipoDeDespesa);
+                listaDeTiposDeDespesas.adicionar(objTipoDeDespesa);
             }
             br.close();
             return listaDeTiposDeDespesas;
@@ -92,18 +79,15 @@ public class TipoDeDespesasDAO implements ITipoDeDespesasCRUD {
     @Override
     public void atualizar(TipoDeDespesa tipoDeDespesa) throws Exception {
         try {
-            ArrayList<TipoDeDespesa> listagem = null;
-            listagem = this.listarDespesas();
+            ListaEncadeada<TipoDeDespesa> listagem = this.listarDespesas();
             FileWriter fw = new FileWriter(nomeDoArquivoNoDisco);
             BufferedWriter bw = new BufferedWriter(fw);
             for (TipoDeDespesa obj : listagem) {
                 if (obj.getIdTipoDeDespesa().equals(tipoDeDespesa.getIdTipoDeDespesa())) {
-                    String str = tipoDeDespesa.getIdTipoDeDespesa() + ";";
-                    str += tipoDeDespesa.getDescricao() + "\n";
+                    String str = tipoDeDespesa.getIdTipoDeDespesa() + ";" + tipoDeDespesa.getDescricao() + "\n";
                     bw.write(str);
                 } else {
-                    String str = obj.getIdTipoDeDespesa() + ";";
-                    str += obj.getDescricao() + "\n";
+                    String str = obj.getIdTipoDeDespesa() + ";" + obj.getDescricao() + "\n";
                     bw.write(str);
                 }
             }
@@ -117,14 +101,12 @@ public class TipoDeDespesasDAO implements ITipoDeDespesasCRUD {
     @Override
     public void remover(String idTipoDeDespesa) throws Exception {
         try {
-            ArrayList<TipoDeDespesa> listagem = null;
-            listagem = this.listarDespesas();
+            ListaEncadeada<TipoDeDespesa> listagem = this.listarDespesas();
             FileWriter fw = new FileWriter(nomeDoArquivoNoDisco);
             BufferedWriter bw = new BufferedWriter(fw);
             for (TipoDeDespesa obj : listagem) {
                 if (!obj.getIdTipoDeDespesa().equals(idTipoDeDespesa)) {
-                    String str = obj.getIdTipoDeDespesa() + ";";
-                    str += obj.getDescricao() + "\n";
+                    String str = obj.getIdTipoDeDespesa() + ";" + obj.getDescricao() + "\n";
                     bw.write(str);
                 }
             }
@@ -136,28 +118,24 @@ public class TipoDeDespesasDAO implements ITipoDeDespesasCRUD {
     }
 
     @Override
-    public ArrayList<TipoDeDespesa> listarDespesasPorVeiculo(String idDeVeiculo) throws Exception {
+    public ListaEncadeada<TipoDeDespesa> listarDespesasPorVeiculo(String idDeVeiculo) throws Exception {
         try {
             MovimentacaoDAO movimentacaoDAO = new MovimentacaoDAO();
-
-            ArrayList<Movimentacao> movimentacoesDoVeiculo = movimentacaoDAO.listarMovimentacoes();
-            ArrayList<TipoDeDespesa> despesasDoVeiculo = new ArrayList<>();
+            ListaEncadeada<Movimentacao> movimentacoesDoVeiculo = movimentacaoDAO.listarMovimentacoes();
+            ListaEncadeada<TipoDeDespesa> despesasDoVeiculo = new ListaEncadeada<>();
 
             for (Movimentacao mov : movimentacoesDoVeiculo) {
                 if (mov.getIdDeVeiculo().equals(idDeVeiculo)) {
                     TipoDeDespesa despesa = buscarPorID(mov.getIdTipoDeDespesa());
-
                     if (despesa != null) {
-                        despesasDoVeiculo.add(despesa);
+                        despesasDoVeiculo.adicionar(despesa);
                     }
                 }
             }
-
             return despesasDoVeiculo;
         } catch (Exception erro) {
             String msg = "Persistencia - Metodo Listar Despesas Por Veiculo - " + erro.getMessage();
             throw new Exception(msg);
         }
     }
-
 }

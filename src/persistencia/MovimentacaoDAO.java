@@ -1,10 +1,7 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package persistencia;
 
-import java.util.ArrayList;
+import estruturas.ListaEncadeada;
+import estruturas.No;
 import modelos.classes.Movimentacao;
 import modelos.interfaces.IMovimentacaoCRUD;
 
@@ -14,12 +11,19 @@ import java.io.FileReader;
 import java.io.FileWriter;
 
 public class MovimentacaoDAO implements IMovimentacaoCRUD {
-    // Atributos
     private String nomeDoArquivoNoDisco = null;
 
-    // Metodo Construtor
     public MovimentacaoDAO() {
         nomeDoArquivoNoDisco = "./src/bancodedados/Movimentação.txt";
+    }
+
+    /**
+     * FUNÇÃO RECURSIVA EXIGIDA PELO REQUISITO ACADÊMICO
+     * Percorre os nós da ListaEncadeada somando o atributo valor de cada Movimentacao.
+     */
+    private double somarValoresRecursivo(No<Movimentacao> noAtual) {
+        if (noAtual == null) return 0.0;
+        return noAtual.getValor().getValor() + somarValoresRecursivo(noAtual.getProximo());
     }
 
     @Override
@@ -44,9 +48,9 @@ public class MovimentacaoDAO implements IMovimentacaoCRUD {
     }
 
     @Override
-    public ArrayList<Movimentacao> listarMovimentacoes() throws Exception {
+    public ListaEncadeada<Movimentacao> listarMovimentacoes() throws Exception {
         try {
-            ArrayList<Movimentacao> lista = new ArrayList<>();
+            ListaEncadeada<Movimentacao> lista = new ListaEncadeada<>();
             FileReader fr = new FileReader(nomeDoArquivoNoDisco);
             BufferedReader br = new BufferedReader(fr);
 
@@ -55,13 +59,13 @@ public class MovimentacaoDAO implements IMovimentacaoCRUD {
                 String[] vetorStr = linha.split(";");
                 Movimentacao obj = new Movimentacao(
                         vetorStr[0],
-                        vetorStr[1], // idVeiculo
-                        vetorStr[2], // idTipoDespesa
-                        vetorStr[3], // descricao
-                        vetorStr[4], // data (String)
-                        Double.parseDouble(vetorStr[5]) // valor
+                        vetorStr[1],
+                        vetorStr[2],
+                        vetorStr[3],
+                        vetorStr[4],
+                        Double.parseDouble(vetorStr[5])
                 );
-                lista.add(obj);
+                lista.adicionar(obj);
             }
             br.close();
             return lista;
@@ -89,12 +93,12 @@ public class MovimentacaoDAO implements IMovimentacaoCRUD {
     @Override
     public void atualizar(Movimentacao movimentacao) throws Exception {
         try {
-            ArrayList<Movimentacao> lista = listarMovimentacoes();
+            ListaEncadeada<Movimentacao> lista = listarMovimentacoes();
 
             boolean encontrou = false;
-            for (int i = 0; i < lista.size(); i++) {
-                if (lista.get(i).getIdMovimentacao().equals(movimentacao.getIdMovimentacao())) {
-                    lista.set(i, movimentacao);
+            for (int i = 0; i < lista.tamanho(); i++) {
+                if (lista.obter(i).getIdMovimentacao().equals(movimentacao.getIdMovimentacao())) {
+                    lista.definir(i, movimentacao);
                     encontrou = true;
                     break;
                 }
@@ -127,7 +131,7 @@ public class MovimentacaoDAO implements IMovimentacaoCRUD {
     @Override
     public void remover(String movimentacaoID) throws Exception {
         try {
-            ArrayList<Movimentacao> lista = this.listarMovimentacoes();
+            ListaEncadeada<Movimentacao> lista = this.listarMovimentacoes();
             FileWriter fw = new FileWriter(nomeDoArquivoNoDisco);
             BufferedWriter bw = new BufferedWriter(fw);
 
@@ -151,10 +155,10 @@ public class MovimentacaoDAO implements IMovimentacaoCRUD {
     }
 
     @Override
-    public ArrayList<Movimentacao> listarMovimentacoesPorMes(int mes, int ano) throws Exception {
+    public ListaEncadeada<Movimentacao> listarMovimentacoesPorMes(int mes, int ano) throws Exception {
         try {
-            ArrayList<Movimentacao> todasMovimentacoes = listarMovimentacoes();
-            ArrayList<Movimentacao> movimentacoesDoMes = new ArrayList<>();
+            ListaEncadeada<Movimentacao> todasMovimentacoes = listarMovimentacoes();
+            ListaEncadeada<Movimentacao> movimentacoesDoMes = new ListaEncadeada<>();
 
             for (Movimentacao mov : todasMovimentacoes) {
                 String data = mov.getData();
@@ -164,7 +168,7 @@ public class MovimentacaoDAO implements IMovimentacaoCRUD {
                 int anoMovimentacao = Integer.parseInt(partesData[2]);
 
                 if (mesMovimentacao == mes && anoMovimentacao == ano) {
-                    movimentacoesDoMes.add(mov);
+                    movimentacoesDoMes.adicionar(mov);
                 }
             }
 
@@ -176,10 +180,10 @@ public class MovimentacaoDAO implements IMovimentacaoCRUD {
     }
 
     @Override
-    public ArrayList<Movimentacao> listarGastosCombustivelPorMes(int mes, int ano) throws Exception {
+    public ListaEncadeada<Movimentacao> listarGastosCombustivelPorMes(int mes, int ano) throws Exception {
         try {
-            ArrayList<Movimentacao> todasMovimentacoes = listarMovimentacoes();
-            ArrayList<Movimentacao> gastosCombustivel = new ArrayList<>();
+            ListaEncadeada<Movimentacao> todasMovimentacoes = listarMovimentacoes();
+            ListaEncadeada<Movimentacao> gastosCombustivel = new ListaEncadeada<>();
 
             for (Movimentacao mov : todasMovimentacoes) {
                 String data = mov.getData();
@@ -205,9 +209,8 @@ public class MovimentacaoDAO implements IMovimentacaoCRUD {
                 int mesMovimentacao = Integer.parseInt(partesData[1]);
                 int anoMovimentacao = Integer.parseInt(partesData[2]);
 
-                if (mesMovimentacao == mes && anoMovimentacao == ano
-                        && ehCombustivel) {
-                    gastosCombustivel.add(mov);
+                if (mesMovimentacao == mes && anoMovimentacao == ano && ehCombustivel) {
+                    gastosCombustivel.adicionar(mov);
                 }
             }
 
@@ -219,15 +222,10 @@ public class MovimentacaoDAO implements IMovimentacaoCRUD {
     }
 
     @Override
-    public double calcularSomatorioPorMes(ArrayList<Movimentacao> movimentacoesDoMes) throws Exception {
+    public double calcularSomatorioPorMes(ListaEncadeada<Movimentacao> movimentacoesDoMes) throws Exception {
         try {
-            double somatorio = 0;
-
-            for (Movimentacao mov : movimentacoesDoMes) {
-                somatorio += mov.getValor();
-            }
-
-            return somatorio;
+            // Refatorado para usar a função recursiva (Relatório 2)
+            return somarValoresRecursivo(movimentacoesDoMes.getCabeca());
         } catch (Exception erro) {
             String msg = "Persistencia - Metodo Calcular Somatorio Por Mes - " + erro.getMessage();
             throw new Exception(msg);
@@ -235,10 +233,10 @@ public class MovimentacaoDAO implements IMovimentacaoCRUD {
     }
 
     @Override
-    public ArrayList<Movimentacao> listarGastosIPVAPorAno(int ano) throws Exception {
+    public ListaEncadeada<Movimentacao> listarGastosIPVAPorAno(int ano) throws Exception {
         try {
-            ArrayList<Movimentacao> todasMovimentacoes = listarMovimentacoes();
-            ArrayList<Movimentacao> gastosIPVA = new ArrayList<>();
+            ListaEncadeada<Movimentacao> todasMovimentacoes = listarMovimentacoes();
+            ListaEncadeada<Movimentacao> gastosIPVA = new ListaEncadeada<>();
 
             for (Movimentacao mov : todasMovimentacoes) {
                 String data = mov.getData();
@@ -247,7 +245,7 @@ public class MovimentacaoDAO implements IMovimentacaoCRUD {
                 int anoMovimentacao = Integer.parseInt(partesData[2]);
 
                 if (anoMovimentacao == ano && mov.getDescricao().toLowerCase().contains("ipva")) {
-                    gastosIPVA.add(mov);
+                    gastosIPVA.adicionar(mov);
                 }
             }
 
@@ -261,14 +259,9 @@ public class MovimentacaoDAO implements IMovimentacaoCRUD {
     @Override
     public double calcularTotalIPVAPorAno(int ano) throws Exception {
         try {
-            ArrayList<Movimentacao> gastosIPVA = listarGastosIPVAPorAno(ano);
-            double total = 0;
-
-            for (Movimentacao mov : gastosIPVA) {
-                total += mov.getValor();
-            }
-
-            return total;
+            ListaEncadeada<Movimentacao> gastosIPVA = listarGastosIPVAPorAno(ano);
+            // Refatorado para usar a função recursiva (Relatório 4)
+            return somarValoresRecursivo(gastosIPVA.getCabeca());
         } catch (Exception erro) {
             String msg = "Persistencia - Metodo Calcular Total IPVA Por Ano - " + erro.getMessage();
             throw new Exception(msg);
@@ -276,10 +269,10 @@ public class MovimentacaoDAO implements IMovimentacaoCRUD {
     }
 
     @Override
-    public ArrayList<Movimentacao> listarMultasPorVeiculoEAno(String idDeVeiculo, int ano) throws Exception {
+    public ListaEncadeada<Movimentacao> listarMultasPorVeiculoEAno(String idDeVeiculo, int ano) throws Exception {
         try {
-            ArrayList<Movimentacao> todasMovimentacoes = listarMovimentacoes();
-            ArrayList<Movimentacao> multasDoVeiculo = new ArrayList<>();
+            ListaEncadeada<Movimentacao> todasMovimentacoes = listarMovimentacoes();
+            ListaEncadeada<Movimentacao> multasDoVeiculo = new ListaEncadeada<>();
 
             for (Movimentacao mov : todasMovimentacoes) {
                 String data = mov.getData();
@@ -290,10 +283,8 @@ public class MovimentacaoDAO implements IMovimentacaoCRUD {
                 String descricao = mov.getDescricao().toLowerCase();
                 boolean ehMulta = descricao.contains("multa");
 
-                if (mov.getIdDeVeiculo().equals(idDeVeiculo)
-                        && anoMovimentacao == ano
-                        && ehMulta) {
-                    multasDoVeiculo.add(mov);
+                if (mov.getIdDeVeiculo().equals(idDeVeiculo) && anoMovimentacao == ano && ehMulta) {
+                    multasDoVeiculo.adicionar(mov);
                 }
             }
             return multasDoVeiculo;
@@ -306,14 +297,9 @@ public class MovimentacaoDAO implements IMovimentacaoCRUD {
     @Override
     public double calcularTotalMultasPorVeiculoEAno(String idDeVeiculo, int ano) throws Exception {
         try {
-            ArrayList<Movimentacao> multas = listarMultasPorVeiculoEAno(idDeVeiculo, ano);
-            double total = 0;
-
-            for (Movimentacao mov : multas) {
-                total += mov.getValor();
-            }
-
-            return total;
+            ListaEncadeada<Movimentacao> multas = listarMultasPorVeiculoEAno(idDeVeiculo, ano);
+            // Refatorado para usar a função recursiva (Relatório 6)
+            return somarValoresRecursivo(multas.getCabeca());
         } catch (Exception erro) {
             String msg = "Persistencia - Metodo Calcular Total Multas Por Veiculo E Ano - " + erro.getMessage();
             throw new Exception(msg);
@@ -321,20 +307,20 @@ public class MovimentacaoDAO implements IMovimentacaoCRUD {
     }
 
     @Override
-    public ArrayList<Movimentacao> listarDespesasDeUmDeterminadoVeiculo(String idDeVeiculo) throws Exception {
+    public ListaEncadeada<Movimentacao> listarDespesasDeUmDeterminadoVeiculo(String idDeVeiculo) throws Exception {
         try {
-            ArrayList<Movimentacao> todasMovimentacoes = listarMovimentacoes();
-            ArrayList<Movimentacao> despesasDoVeiculo = new ArrayList<>();
+            ListaEncadeada<Movimentacao> todasMovimentacoes = listarMovimentacoes();
+            ListaEncadeada<Movimentacao> despesasDoVeiculo = new ListaEncadeada<>();
 
             for (Movimentacao mov : todasMovimentacoes) {
                 if (mov.getIdDeVeiculo().equals(idDeVeiculo)) {
-                    despesasDoVeiculo.add(mov);
+                    despesasDoVeiculo.adicionar(mov);
                 }
             }
 
             return despesasDoVeiculo;
         } catch (Exception erro) {
-            String msg = "Persistencia - Metodo Listar Despesas De Um Determinado Veiculo - " + erro.getMessage();
+            String msg = "Persistencia - Metodo Listar Despesas De Um Traduzido Veiculo - " + erro.getMessage();
             throw new Exception(msg);
         }
     }
@@ -342,17 +328,11 @@ public class MovimentacaoDAO implements IMovimentacaoCRUD {
     @Override
     public double calcularTotalDespesasDeUmDeterminadoVeiculo(String idDeVeiculo) throws Exception {
         try {
-            ArrayList<Movimentacao> despesas = listarDespesasDeUmDeterminadoVeiculo(idDeVeiculo);
-            double total = 0;
-
-            for (Movimentacao mov : despesas) {
-                total += mov.getValor();
-            }
-
-            return total;
+            ListaEncadeada<Movimentacao> despesas = listarDespesasDeUmDeterminadoVeiculo(idDeVeiculo);
+            // Refatorado para usar a função recursiva (Relatório 1)
+            return somarValoresRecursivo(despesas.getCabeca());
         } catch (Exception erro) {
-            String msg = "Persistencia - Metodo Calcular Total Despesas De Um Determinado Veiculo - "
-                    + erro.getMessage();
+            String msg = "Persistencia - Metodo Calcular Total Despesas De Um Determinado Veiculo - " + erro.getMessage();
             throw new Exception(msg);
         }
     }
@@ -360,8 +340,8 @@ public class MovimentacaoDAO implements IMovimentacaoCRUD {
     @Override
     public String contarTodasMovimentacoes() throws Exception {
         try {
-            ArrayList<Movimentacao> todasMovimentacoes = listarMovimentacoes();
-            var contador = todasMovimentacoes.size();
+            ListaEncadeada<Movimentacao> todasMovimentacoes = listarMovimentacoes();
+            var contador = todasMovimentacoes.tamanho();
             return Integer.toString(contador);
         } catch (Exception erro) {
             String msg = "Persistencia - Metodo Contar Todas Movimentacoes - " + erro.getMessage();

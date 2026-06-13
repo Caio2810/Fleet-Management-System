@@ -1,9 +1,7 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package controle;
 
+import estruturas.ListaEncadeada;
+import estruturas.No;
 import modelos.classes.Movimentacao;
 import modelos.classes.TipoDeDespesa;
 import modelos.classes.Veiculo;
@@ -15,12 +13,10 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.NumberFormat;
 import java.util.Locale;
-import java.util.ArrayList;
 import java.util.UUID;
-
+import java.util.Comparator;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
-
 import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.Element;
@@ -33,7 +29,6 @@ import com.itextpdf.text.pdf.PdfPCell;
 import com.itextpdf.text.pdf.PdfPTable;
 
 public class ControladoraMovimentacao {
-
     private MovimentacaoDAO dao;
     private VeiculosDAO veiculosDao;
     private TipoDeDespesasDAO despesasDao;
@@ -44,9 +39,35 @@ public class ControladoraMovimentacao {
         despesasDao = new TipoDeDespesasDAO();
     }
 
+    /**
+     * FUNÇÃO RECURSIVA EXIGIDA PELO REQUISITO ACADÊMICO (Relatório 3 e salvaguardas)
+     * Utilizada no somatório de combustível por mês para conformidade.
+     */
+    private double somarValoresRecursivo(No<Movimentacao> noAtual) {
+        if (noAtual == null) return 0.0;
+        return noAtual.getValor().getValor() + somarValoresRecursivo(noAtual.getProximo());
+    }
+
+    /**
+     * Comparador cronológico manual para datas no formato brasileiro (dd/MM/yyyy).
+     * Garante consistência na ordenação do Insertion Sort.
+     */
+    private Comparator<Movimentacao> obterComparadorPorData() {
+        return (m1, m2) -> {
+            try {
+                String[] p1 = m1.getData().split("/");
+                String[] p2 = m2.getData().split("/");
+                String s1 = p1[2] + p1[1] + p1[0]; // Formato yyyyMMdd
+                String s2 = p2[2] + p2[1] + p2[0]; // Formato yyyyMMdd
+                return s1.compareTo(s2);
+            } catch (Exception e) {
+                return m1.getData().compareTo(m2.getData());
+            }
+        };
+    }
+
     private String gerarIdAleatorio() throws Exception {
         String uuid = UUID.randomUUID().toString().replace("-", "");
-
         try {
             return uuid.substring(0, 7).toUpperCase();
         } catch (Exception e) {
@@ -57,7 +78,6 @@ public class ControladoraMovimentacao {
 
     public void incluirMovimentacao(String idDeVeiculo, String idTipoDeDespesa,
             String descricao, String data, double valor, JTable tabela) throws Exception {
-
         try {
             String idMovimentacao = gerarIdAleatorio();
             Movimentacao m = new Movimentacao(idMovimentacao, idDeVeiculo, idTipoDeDespesa, descricao, data, valor);
@@ -70,7 +90,7 @@ public class ControladoraMovimentacao {
     }
 
     public void carregarTabela(JTable tabela) throws Exception {
-        ArrayList<Movimentacao> lista = dao.listarMovimentacoes();
+        ListaEncadeada<Movimentacao> lista = dao.listarMovimentacoes();
 
         DefaultTableModel modeloTabela = (DefaultTableModel) tabela.getModel();
         modeloTabela.setRowCount(0);
@@ -116,7 +136,7 @@ public class ControladoraMovimentacao {
         }
     }
 
-    public ArrayList<Veiculo> listarVeiculos() throws Exception {
+    public ListaEncadeada<Veiculo> listarVeiculos() throws Exception {
         try {
             return veiculosDao.listarVeiculos();
         } catch (Exception e) {
@@ -125,7 +145,7 @@ public class ControladoraMovimentacao {
         }
     }
 
-    public ArrayList<TipoDeDespesa> listarTiposDeDespesa() throws Exception {
+    public ListaEncadeada<TipoDeDespesa> listarTiposDeDespesa() throws Exception {
         try {
             return despesasDao.listarDespesas();
         } catch (Exception e) {
@@ -154,23 +174,19 @@ public class ControladoraMovimentacao {
 
     public double buscarTotalGastoEmDespesas() throws Exception {
         try {
-            ArrayList<Movimentacao> movimentacaos = dao.listarMovimentacoes();
-
+            ListaEncadeada<Movimentacao> movimentacaos = dao.listarMovimentacoes();
             double totalGasto = 0.0;
-
             for (Movimentacao movimentacao : movimentacaos) {
                 totalGasto += movimentacao.getValor();
             }
-
             return totalGasto;
-
         } catch (Exception e) {
             String msg = "ControladoraMovimentacao - Metodo buscarTotalGastoEmDespesas - " + e.getMessage();
             throw new Exception(msg);
         }
     }
 
-    public ArrayList<Movimentacao> listarMovimentacoesPorMes(int mes, int ano) throws Exception {
+    public ListaEncadeada<Movimentacao> listarMovimentacoesPorMes(int mes, int ano) throws Exception {
         try {
             return dao.listarMovimentacoesPorMes(mes, ano);
         } catch (Exception e) {
@@ -179,7 +195,7 @@ public class ControladoraMovimentacao {
         }
     }
 
-    public double calcularSomatorioPorMes(ArrayList<Movimentacao> movimentacoesDoMes) throws Exception {
+    public double calcularSomatorioPorMes(ListaEncadeada<Movimentacao> movimentacoesDoMes) throws Exception {
         try {
             return dao.calcularSomatorioPorMes(movimentacoesDoMes);
         } catch (Exception e) {
@@ -188,8 +204,7 @@ public class ControladoraMovimentacao {
         }
     }
 
-    // RELATORIOS
-    public ArrayList<Movimentacao> listarGastosCombustivelPorMes(int mes, int ano) throws Exception {
+    public ListaEncadeada<Movimentacao> listarGastosCombustivelPorMes(int mes, int ano) throws Exception {
         try {
             return dao.listarGastosCombustivelPorMes(mes, ano);
         } catch (Exception e) {
@@ -200,7 +215,7 @@ public class ControladoraMovimentacao {
 
     // RELATORIO 2
     public void gerarRelatorio2MensalPDF(int mes, int ano, String mesNome, double totalGasto,
-            ArrayList<Movimentacao> movimentacaos) throws Exception {
+            ListaEncadeada<Movimentacao> movimentacaos) throws Exception {
         String fileName = "Relatorio_" + mesNome + "_" + ano + ".pdf";
         String userHome = System.getProperty("user.home");
         String desktopPath = userHome + File.separator + "Desktop" + File.separator;
@@ -210,12 +225,10 @@ public class ControladoraMovimentacao {
         String totalFormatado = currencyFormat.format(totalGasto);
 
         Document document = new Document();
-
         try {
             PdfWriter.getInstance(document, new FileOutputStream(filePath));
             document.open();
 
-            // TÍTULO
             Font fonteTitulo = new Font(Font.FontFamily.HELVETICA, 16, Font.BOLD);
             Paragraph titulo = new Paragraph("RELATÓRIO MENSAL DE DESPESAS DA FROTA", fonteTitulo);
             titulo.setAlignment(Element.ALIGN_CENTER);
@@ -223,22 +236,18 @@ public class ControladoraMovimentacao {
 
             document.add(new Paragraph("\n"));
 
-            // MÊS/ANO
             Font fonteNormal = new Font(Font.FontFamily.HELVETICA, 12, Font.NORMAL);
             document.add(new Paragraph("Mês/Ano de Referência: " + mesNome + " / " + ano, fonteNormal));
             document.add(new Paragraph("\n"));
 
-            // CRIAR TABELA
-            PdfPTable tabela = new PdfPTable(6); // 6 colunas
+            PdfPTable tabela = new PdfPTable(6);
             tabela.setWidthPercentage(100);
             tabela.setSpacingBefore(10f);
             tabela.setSpacingAfter(10f);
 
-            // Definir largura das colunas (proporcionalmente)
             float[] larguraColunas = { 1.5f, 2f, 2f, 3f, 2f, 2f };
             tabela.setWidths(larguraColunas);
 
-            // CABEÇALHO DA TABELA
             Font fonteCabecalho = new Font(Font.FontFamily.HELVETICA, 10, Font.BOLD);
 
             PdfPCell cellCabecalho1 = new PdfPCell(new Phrase("ID", fonteCabecalho));
@@ -271,36 +280,29 @@ public class ControladoraMovimentacao {
             cellCabecalho6.setBackgroundColor(BaseColor.LIGHT_GRAY);
             tabela.addCell(cellCabecalho6);
 
-            // PREENCHER TABELA COM AS MOVIMENTAÇÕES
             Font fonteDados = new Font(Font.FontFamily.HELVETICA, 9, Font.NORMAL);
 
             for (Movimentacao mov : movimentacaos) {
-                // ID
                 PdfPCell cellId = new PdfPCell(new Phrase(mov.getIdMovimentacao(), fonteDados));
                 cellId.setHorizontalAlignment(Element.ALIGN_CENTER);
                 tabela.addCell(cellId);
 
-                // Veículo
                 PdfPCell cellVeiculo = new PdfPCell(new Phrase(mov.getIdDeVeiculo(), fonteDados));
                 cellVeiculo.setHorizontalAlignment(Element.ALIGN_CENTER);
                 tabela.addCell(cellVeiculo);
 
-                // Tipo Despesa
                 PdfPCell cellTipoDespesa = new PdfPCell(new Phrase(mov.getIdTipoDeDespesa(), fonteDados));
                 cellTipoDespesa.setHorizontalAlignment(Element.ALIGN_CENTER);
                 tabela.addCell(cellTipoDespesa);
 
-                // Descrição
                 PdfPCell cellDescricao = new PdfPCell(new Phrase(mov.getDescricao(), fonteDados));
                 cellDescricao.setHorizontalAlignment(Element.ALIGN_LEFT);
                 tabela.addCell(cellDescricao);
 
-                // Data
                 PdfPCell cellData = new PdfPCell(new Phrase(mov.getData(), fonteDados));
                 cellData.setHorizontalAlignment(Element.ALIGN_CENTER);
                 tabela.addCell(cellData);
 
-                // Valor
                 String valorFormatado = currencyFormat.format(mov.getValor());
                 PdfPCell cellValor = new PdfPCell(new Phrase(valorFormatado, fonteDados));
                 cellValor.setHorizontalAlignment(Element.ALIGN_RIGHT);
@@ -309,7 +311,6 @@ public class ControladoraMovimentacao {
 
             document.add(tabela);
 
-            // TOTAL
             document.add(new Paragraph("\n"));
             Font fonteSubtitulo = new Font(Font.FontFamily.HELVETICA, 14, Font.BOLD);
             document.add(new Paragraph("Somatório Geral de Gastos da Frota:", fonteSubtitulo));
@@ -341,22 +342,23 @@ public class ControladoraMovimentacao {
 
     // RELATORIO 3
     public void gerarRelatorio3MensalPDF(int mes, int ano, String mesNome, double totalGasto,
-            ArrayList<Movimentacao> movimentacaos) throws Exception {
+            ListaEncadeada<Movimentacao> movimentacaos) throws Exception {
         String fileName = "Relatorio_" + mesNome + "_" + ano + ".pdf";
         String userHome = System.getProperty("user.home");
         String desktopPath = userHome + File.separator + "Desktop" + File.separator;
         String filePath = desktopPath + fileName;
 
+        // REQUISITO ACADÊMICO: Garante o cálculo recursivo do total de combustível para o Relatório 3
+        totalGasto = somarValoresRecursivo(movimentacaos.getCabeca());
+
         NumberFormat currencyFormat = NumberFormat.getCurrencyInstance(new Locale("pt", "BR"));
         String totalFormatado = currencyFormat.format(totalGasto);
 
         Document document = new Document();
-
         try {
             PdfWriter.getInstance(document, new FileOutputStream(filePath));
             document.open();
 
-            // TÍTULO
             Font fonteTitulo = new Font(Font.FontFamily.HELVETICA, 16, Font.BOLD);
             Paragraph titulo = new Paragraph("RELATÓRIO DE DESPESAS DA FROTA COM GASOLINA EM UM MÊS", fonteTitulo);
             titulo.setAlignment(Element.ALIGN_CENTER);
@@ -364,22 +366,18 @@ public class ControladoraMovimentacao {
 
             document.add(new Paragraph("\n"));
 
-            // MÊS/ANO
-            Font fonteNormal = new Font(Font.FontFamily.HELVETICA, 12, Font.NORMAL);
-            document.add(new Paragraph("Mês/Ano de Referência: " + mesNome + " / " + ano, fonteNormal));
+            Font fontNormal = new Font(Font.FontFamily.HELVETICA, 12, Font.NORMAL);
+            document.add(new Paragraph("Mês/Ano de Referência: " + mesNome + " / " + ano, fontNormal));
             document.add(new Paragraph("\n"));
 
-            // CRIAR TABELA
-            PdfPTable tabela = new PdfPTable(6); // 6 colunas
+            PdfPTable tabela = new PdfPTable(6);
             tabela.setWidthPercentage(100);
             tabela.setSpacingBefore(10f);
             tabela.setSpacingAfter(10f);
 
-            // Definir largura das colunas (proporcionalmente)
             float[] larguraColunas = { 1.5f, 2f, 2f, 3f, 2f, 2f };
             tabela.setWidths(larguraColunas);
 
-            // CABEÇALHO DA TABELA
             Font fonteCabecalho = new Font(Font.FontFamily.HELVETICA, 10, Font.BOLD);
 
             PdfPCell cellCabecalho1 = new PdfPCell(new Phrase("ID", fonteCabecalho));
@@ -412,36 +410,29 @@ public class ControladoraMovimentacao {
             cellCabecalho6.setBackgroundColor(BaseColor.LIGHT_GRAY);
             tabela.addCell(cellCabecalho6);
 
-            // PREENCHER TABELA COM AS MOVIMENTAÇÕES
             Font fonteDados = new Font(Font.FontFamily.HELVETICA, 9, Font.NORMAL);
 
             for (Movimentacao mov : movimentacaos) {
-                // ID
                 PdfPCell cellId = new PdfPCell(new Phrase(mov.getIdMovimentacao(), fonteDados));
                 cellId.setHorizontalAlignment(Element.ALIGN_CENTER);
                 tabela.addCell(cellId);
 
-                // Veículo
                 PdfPCell cellVeiculo = new PdfPCell(new Phrase(mov.getIdDeVeiculo(), fonteDados));
                 cellVeiculo.setHorizontalAlignment(Element.ALIGN_CENTER);
                 tabela.addCell(cellVeiculo);
 
-                // Tipo Despesa
                 PdfPCell cellTipoDespesa = new PdfPCell(new Phrase(mov.getIdTipoDeDespesa(), fonteDados));
                 cellTipoDespesa.setHorizontalAlignment(Element.ALIGN_CENTER);
                 tabela.addCell(cellTipoDespesa);
 
-                // Descrição
                 PdfPCell cellDescricao = new PdfPCell(new Phrase(mov.getDescricao(), fonteDados));
                 cellDescricao.setHorizontalAlignment(Element.ALIGN_LEFT);
                 tabela.addCell(cellDescricao);
 
-                // Data
                 PdfPCell cellData = new PdfPCell(new Phrase(mov.getData(), fonteDados));
                 cellData.setHorizontalAlignment(Element.ALIGN_CENTER);
                 tabela.addCell(cellData);
 
-                // Valor
                 String valorFormatado = currencyFormat.format(mov.getValor());
                 PdfPCell cellValor = new PdfPCell(new Phrase(valorFormatado, fonteDados));
                 cellValor.setHorizontalAlignment(Element.ALIGN_RIGHT);
@@ -450,7 +441,6 @@ public class ControladoraMovimentacao {
 
             document.add(tabela);
 
-            // TOTAL
             document.add(new Paragraph("\n"));
             Font fonteSubtitulo = new Font(Font.FontFamily.HELVETICA, 14, Font.BOLD);
             document.add(new Paragraph("Total de gastos da frota com combustível:", fonteSubtitulo));
@@ -481,7 +471,7 @@ public class ControladoraMovimentacao {
     }
 
     // RELATORIO 4
-    public ArrayList<Movimentacao> listarGastosIPVAPorAno(int ano) throws Exception {
+    public ListaEncadeada<Movimentacao> listarGastosIPVAPorAno(int ano) throws Exception {
         try {
             return dao.listarGastosIPVAPorAno(ano);
         } catch (Exception e) {
@@ -499,7 +489,7 @@ public class ControladoraMovimentacao {
         }
     }
 
-    public void gerarRelatorio4MPDF(int ano, double totalGasto, ArrayList<Movimentacao> movimentacaos)
+    public void gerarRelatorio4MPDF(int ano, double totalGasto, ListaEncadeada<Movimentacao> movimentacaos)
             throws Exception {
         String fileName = "Relatorio_IPVA_" + ano + ".pdf";
         String userHome = System.getProperty("user.home");
@@ -510,12 +500,10 @@ public class ControladoraMovimentacao {
         String totalFormatado = currencyFormat.format(totalGasto);
 
         Document document = new Document();
-
         try {
             PdfWriter.getInstance(document, new FileOutputStream(filePath));
             document.open();
 
-            // TÍTULO
             Font fonteTitulo = new Font(Font.FontFamily.HELVETICA, 16, Font.BOLD);
             Paragraph titulo = new Paragraph("RELATÓRIO DE GASTOS COM IPVA DA FROTA", fonteTitulo);
             titulo.setAlignment(Element.ALIGN_CENTER);
@@ -523,22 +511,18 @@ public class ControladoraMovimentacao {
 
             document.add(new Paragraph("\n"));
 
-            // ANO
             Font fonteNormal = new Font(Font.FontFamily.HELVETICA, 12, Font.NORMAL);
             document.add(new Paragraph("Ano de Referência: " + ano, fonteNormal));
             document.add(new Paragraph("\n"));
 
-            // CRIAR TABELA
-            PdfPTable tabela = new PdfPTable(6); // 6 colunas
+            PdfPTable tabela = new PdfPTable(6);
             tabela.setWidthPercentage(100);
             tabela.setSpacingBefore(10f);
             tabela.setSpacingAfter(10f);
 
-            // Definir largura das colunas (proporcionalmente)
             float[] larguraColunas = { 1.5f, 2f, 2f, 3f, 2f, 2f };
             tabela.setWidths(larguraColunas);
 
-            // CABEÇALHO DA TABELA
             Font fonteCabecalho = new Font(Font.FontFamily.HELVETICA, 10, Font.BOLD);
 
             PdfPCell cellCabecalho1 = new PdfPCell(new Phrase("ID", fonteCabecalho));
@@ -571,36 +555,29 @@ public class ControladoraMovimentacao {
             cellCabecalho6.setBackgroundColor(BaseColor.LIGHT_GRAY);
             tabela.addCell(cellCabecalho6);
 
-            // PREENCHER TABELA COM AS MOVIMENTAÇÕES DE IPVA
             Font fonteDados = new Font(Font.FontFamily.HELVETICA, 9, Font.NORMAL);
 
             for (Movimentacao mov : movimentacaos) {
-                // ID
                 PdfPCell cellId = new PdfPCell(new Phrase(mov.getIdMovimentacao(), fonteDados));
                 cellId.setHorizontalAlignment(Element.ALIGN_CENTER);
                 tabela.addCell(cellId);
 
-                // Veículo
                 PdfPCell cellVeiculo = new PdfPCell(new Phrase(mov.getIdDeVeiculo(), fonteDados));
                 cellVeiculo.setHorizontalAlignment(Element.ALIGN_CENTER);
                 tabela.addCell(cellVeiculo);
 
-                // Tipo Despesa
                 PdfPCell cellTipoDespesa = new PdfPCell(new Phrase(mov.getIdTipoDeDespesa(), fonteDados));
                 cellTipoDespesa.setHorizontalAlignment(Element.ALIGN_CENTER);
                 tabela.addCell(cellTipoDespesa);
 
-                // Descrição
                 PdfPCell cellDescricao = new PdfPCell(new Phrase(mov.getDescricao(), fonteDados));
                 cellDescricao.setHorizontalAlignment(Element.ALIGN_LEFT);
                 tabela.addCell(cellDescricao);
 
-                // Data
                 PdfPCell cellData = new PdfPCell(new Phrase(mov.getData(), fonteDados));
                 cellData.setHorizontalAlignment(Element.ALIGN_CENTER);
                 tabela.addCell(cellData);
 
-                // Valor
                 String valorFormatado = currencyFormat.format(mov.getValor());
                 PdfPCell cellValor = new PdfPCell(new Phrase(valorFormatado, fonteDados));
                 cellValor.setHorizontalAlignment(Element.ALIGN_RIGHT);
@@ -609,7 +586,6 @@ public class ControladoraMovimentacao {
 
             document.add(tabela);
 
-            // TOTAL
             document.add(new Paragraph("\n"));
             Font fonteSubtitulo = new Font(Font.FontFamily.HELVETICA, 14, Font.BOLD);
             document.add(new Paragraph("Somatório Total de IPVA da Frota em " + ano + ":", fonteSubtitulo));
@@ -619,10 +595,10 @@ public class ControladoraMovimentacao {
             valorTotal.setAlignment(Element.ALIGN_RIGHT);
             document.add(valorTotal);
 
-            // INFORMAÇÃO EXTRA
             document.add(new Paragraph("\n"));
             Font fonteInfo = new Font(Font.FontFamily.HELVETICA, 10, Font.ITALIC);
-            document.add(new Paragraph("Total de veículos com IPVA pago: " + movimentacaos.size(), fonteInfo));
+            // .size() alterado para .tamanho()
+            document.add(new Paragraph("Total de veículos com IPVA pago: " + movimentacaos.tamanho(), fonteInfo));
 
         } catch (DocumentException | IOException e) {
             throw new Exception("Erro ao criar ou escrever no arquivo PDF: " + e.getMessage());
@@ -645,7 +621,7 @@ public class ControladoraMovimentacao {
     }
 
     // RELATORIO 6
-    public ArrayList<Movimentacao> listarMultasPorVeiculoEAno(String idDeVeiculo, int ano) throws Exception {
+    public ListaEncadeada<Movimentacao> listarMultasPorVeiculoEAno(String idDeVeiculo, int ano) throws Exception {
         try {
             return dao.listarMultasPorVeiculoEAno(idDeVeiculo, ano);
         } catch (Exception e) {
@@ -664,22 +640,23 @@ public class ControladoraMovimentacao {
     }
 
     public void gerarRelatorio6PDF(String idDeVeiculo, int ano, double totalGasto,
-            ArrayList<Movimentacao> movimentacaos) throws Exception {
+            ListaEncadeada<Movimentacao> movimentacaos) throws Exception {
         String fileName = "Relatorio_Multas_Veiculo_" + idDeVeiculo + "_" + ano + ".pdf";
         String userHome = System.getProperty("user.home");
         String desktopPath = userHome + File.separator + "Desktop" + File.separator;
         String filePath = desktopPath + fileName;
 
+        // REQUISITO ACADÊMICO: Algoritmo de ordenação manual (Insertion Sort) aplicado antes do PDF
+        algoritmos.Ordenador.insertionSort(movimentacaos, obterComparadorPorData());
+
         NumberFormat currencyFormat = NumberFormat.getCurrencyInstance(new Locale("pt", "BR"));
         String totalFormatado = currencyFormat.format(totalGasto);
 
         Document document = new Document();
-
         try {
             PdfWriter.getInstance(document, new FileOutputStream(filePath));
             document.open();
 
-            // TÍTULO
             Font fonteTitulo = new Font(Font.FontFamily.HELVETICA, 16, Font.BOLD);
             Paragraph titulo = new Paragraph("RELATÓRIO DE MULTAS PAGAS POR VEÍCULO", fonteTitulo);
             titulo.setAlignment(Element.ALIGN_CENTER);
@@ -687,23 +664,19 @@ public class ControladoraMovimentacao {
 
             document.add(new Paragraph("\n"));
 
-            // INFORMAÇÕES DO VEÍCULO E ANO
             Font fonteNormal = new Font(Font.FontFamily.HELVETICA, 12, Font.NORMAL);
             document.add(new Paragraph("ID do Veículo: " + idDeVeiculo, fonteNormal));
             document.add(new Paragraph("Ano de Referência: " + ano, fonteNormal));
             document.add(new Paragraph("\n"));
 
-            // CRIAR TABELA
-            PdfPTable tabela = new PdfPTable(6); // 6 colunas
+            PdfPTable tabela = new PdfPTable(6);
             tabela.setWidthPercentage(100);
             tabela.setSpacingBefore(10f);
             tabela.setSpacingAfter(10f);
 
-            // Definir largura das colunas (proporcionalmente)
             float[] larguraColunas = { 1.5f, 2f, 2f, 3f, 2f, 2f };
             tabela.setWidths(larguraColunas);
 
-            // CABEÇALHO DA TABELA
             Font fonteCabecalho = new Font(Font.FontFamily.HELVETICA, 10, Font.BOLD);
 
             PdfPCell cellCabecalho1 = new PdfPCell(new Phrase("ID", fonteCabecalho));
@@ -736,36 +709,29 @@ public class ControladoraMovimentacao {
             cellCabecalho6.setBackgroundColor(BaseColor.LIGHT_GRAY);
             tabela.addCell(cellCabecalho6);
 
-            // PREENCHER TABELA COM AS MULTAS
             Font fonteDados = new Font(Font.FontFamily.HELVETICA, 9, Font.NORMAL);
 
             for (Movimentacao mov : movimentacaos) {
-                // ID
                 PdfPCell cellId = new PdfPCell(new Phrase(mov.getIdMovimentacao(), fonteDados));
                 cellId.setHorizontalAlignment(Element.ALIGN_CENTER);
                 tabela.addCell(cellId);
 
-                // Veículo
                 PdfPCell cellVeiculo = new PdfPCell(new Phrase(mov.getIdDeVeiculo(), fonteDados));
                 cellVeiculo.setHorizontalAlignment(Element.ALIGN_CENTER);
                 tabela.addCell(cellVeiculo);
 
-                // Tipo Despesa
                 PdfPCell cellTipoDespesa = new PdfPCell(new Phrase(mov.getIdTipoDeDespesa(), fonteDados));
                 cellTipoDespesa.setHorizontalAlignment(Element.ALIGN_CENTER);
                 tabela.addCell(cellTipoDespesa);
 
-                // Descrição
                 PdfPCell cellDescricao = new PdfPCell(new Phrase(mov.getDescricao(), fonteDados));
                 cellDescricao.setHorizontalAlignment(Element.ALIGN_LEFT);
                 tabela.addCell(cellDescricao);
 
-                // Data
                 PdfPCell cellData = new PdfPCell(new Phrase(mov.getData(), fonteDados));
                 cellData.setHorizontalAlignment(Element.ALIGN_CENTER);
                 tabela.addCell(cellData);
 
-                // Valor
                 String valorFormatado = currencyFormat.format(mov.getValor());
                 PdfPCell cellValor = new PdfPCell(new Phrase(valorFormatado, fonteDados));
                 cellValor.setHorizontalAlignment(Element.ALIGN_RIGHT);
@@ -774,7 +740,6 @@ public class ControladoraMovimentacao {
 
             document.add(tabela);
 
-            // TOTAL
             document.add(new Paragraph("\n"));
             Font fonteSubtitulo = new Font(Font.FontFamily.HELVETICA, 14, Font.BOLD);
             document.add(new Paragraph("Total de Multas Pagas pelo Veículo em " + ano + ":", fonteSubtitulo));
@@ -784,10 +749,10 @@ public class ControladoraMovimentacao {
             valorTotal.setAlignment(Element.ALIGN_RIGHT);
             document.add(valorTotal);
 
-            // INFORMAÇÃO EXTRA
             document.add(new Paragraph("\n"));
             Font fonteInfo = new Font(Font.FontFamily.HELVETICA, 10, Font.ITALIC);
-            document.add(new Paragraph("Quantidade de multas pagas: " + movimentacaos.size(), fonteInfo));
+            // .size() alterado para .tamanho()
+            document.add(new Paragraph("Quantidade de multas pagas: " + movimentacaos.tamanho(), fonteInfo));
 
         } catch (DocumentException | IOException e) {
             throw new Exception("Erro ao criar ou escrever no arquivo PDF: " + e.getMessage());
@@ -810,7 +775,7 @@ public class ControladoraMovimentacao {
     }
 
     // RELATORIO 1
-    public ArrayList<Movimentacao> listarDespesasDeUmDeterminadoVeiculo(String idDeVeiculo) throws Exception {
+    public ListaEncadeada<Movimentacao> listarDespesasDeUmDeterminadoVeiculo(String idDeVeiculo) throws Exception {
         try {
             return dao.listarDespesasDeUmDeterminadoVeiculo(idDeVeiculo);
         } catch (Exception e) {
@@ -823,29 +788,29 @@ public class ControladoraMovimentacao {
         try {
             return dao.calcularTotalDespesasDeUmDeterminadoVeiculo(idDeVeiculo);
         } catch (Exception e) {
-            String msg = "ControladoraMovimentacao - Metodo calcularTotalDespesasDeUmDeterminadoVeiculo - "
-                    + e.getMessage();
+            String msg = "ControladoraMovimentacao - Metodo calcularTotalDespesasDeUmDeterminadoVeiculo - " + e.getMessage();
             throw new Exception(msg);
         }
     }
 
-    public void gerarRelatorio1PDF(String idDeVeiculo, double totalGasto, ArrayList<Movimentacao> movimentacaos)
+    public void gerarRelatorio1PDF(String idDeVeiculo, double totalGasto, ListaEncadeada<Movimentacao> movimentacaos)
             throws Exception {
         String fileName = "Relatorio_Despesas_Veiculo_" + idDeVeiculo + ".pdf";
         String userHome = System.getProperty("user.home");
         String desktopPath = userHome + File.separator + "Desktop" + File.separator;
         String filePath = desktopPath + fileName;
 
+        // REQUISITO ACADÊMICO: Algoritmo de ordenação manual (Insertion Sort) aplicado antes do PDF
+        algoritmos.Ordenador.insertionSort(movimentacaos, obterComparadorPorData());
+
         NumberFormat currencyFormat = NumberFormat.getCurrencyInstance(new Locale("pt", "BR"));
         String totalFormatado = currencyFormat.format(totalGasto);
 
         Document document = new Document();
-
         try {
             PdfWriter.getInstance(document, new FileOutputStream(filePath));
             document.open();
 
-            // TÍTULO
             Font fonteTitulo = new Font(Font.FontFamily.HELVETICA, 16, Font.BOLD);
             Paragraph titulo = new Paragraph("RELATÓRIO DE DESPESAS REALIZADAS NO VEÍCULO", fonteTitulo);
             titulo.setAlignment(Element.ALIGN_CENTER);
@@ -853,22 +818,18 @@ public class ControladoraMovimentacao {
 
             document.add(new Paragraph("\n"));
 
-            // INFORMAÇÕES DO VEÍCULO
             Font fonteNormal = new Font(Font.FontFamily.HELVETICA, 12, Font.NORMAL);
             document.add(new Paragraph("ID do Veículo: " + idDeVeiculo, fonteNormal));
             document.add(new Paragraph("\n"));
 
-            // CRIAR TABELA
-            PdfPTable tabela = new PdfPTable(6); // 6 colunas
+            PdfPTable tabela = new PdfPTable(6);
             tabela.setWidthPercentage(100);
             tabela.setSpacingBefore(10f);
             tabela.setSpacingAfter(10f);
 
-            // Definir largura das colunas (proporcionalmente)
             float[] larguraColunas = { 1.5f, 2f, 2f, 3f, 2f, 2f };
             tabela.setWidths(larguraColunas);
 
-            // CABEÇALHO DA TABELA
             Font fonteCabecalho = new Font(Font.FontFamily.HELVETICA, 10, Font.BOLD);
 
             PdfPCell cellCabecalho1 = new PdfPCell(new Phrase("ID", fonteCabecalho));
@@ -901,36 +862,29 @@ public class ControladoraMovimentacao {
             cellCabecalho6.setBackgroundColor(BaseColor.LIGHT_GRAY);
             tabela.addCell(cellCabecalho6);
 
-            // PREENCHER TABELA COM AS DESPESAS DO VEÍCULO
             Font fonteDados = new Font(Font.FontFamily.HELVETICA, 9, Font.NORMAL);
 
             for (Movimentacao mov : movimentacaos) {
-                // ID
                 PdfPCell cellId = new PdfPCell(new Phrase(mov.getIdMovimentacao(), fonteDados));
                 cellId.setHorizontalAlignment(Element.ALIGN_CENTER);
                 tabela.addCell(cellId);
 
-                // Veículo
                 PdfPCell cellVeiculo = new PdfPCell(new Phrase(mov.getIdDeVeiculo(), fonteDados));
                 cellVeiculo.setHorizontalAlignment(Element.ALIGN_CENTER);
                 tabela.addCell(cellVeiculo);
 
-                // Tipo Despesa
                 PdfPCell cellTipoDespesa = new PdfPCell(new Phrase(mov.getIdTipoDeDespesa(), fonteDados));
                 cellTipoDespesa.setHorizontalAlignment(Element.ALIGN_CENTER);
                 tabela.addCell(cellTipoDespesa);
 
-                // Descrição
                 PdfPCell cellDescricao = new PdfPCell(new Phrase(mov.getDescricao(), fonteDados));
                 cellDescricao.setHorizontalAlignment(Element.ALIGN_LEFT);
                 tabela.addCell(cellDescricao);
 
-                // Data
                 PdfPCell cellData = new PdfPCell(new Phrase(mov.getData(), fonteDados));
                 cellData.setHorizontalAlignment(Element.ALIGN_CENTER);
                 tabela.addCell(cellData);
 
-                // Valor
                 String valorFormatado = currencyFormat.format(mov.getValor());
                 PdfPCell cellValor = new PdfPCell(new Phrase(valorFormatado, fonteDados));
                 cellValor.setHorizontalAlignment(Element.ALIGN_RIGHT);
@@ -939,7 +893,6 @@ public class ControladoraMovimentacao {
 
             document.add(tabela);
 
-            // TOTAL
             document.add(new Paragraph("\n"));
             Font fonteSubtitulo = new Font(Font.FontFamily.HELVETICA, 14, Font.BOLD);
             document.add(new Paragraph("Total de Despesas do Veículo:", fonteSubtitulo));
@@ -949,10 +902,10 @@ public class ControladoraMovimentacao {
             valorTotal.setAlignment(Element.ALIGN_RIGHT);
             document.add(valorTotal);
 
-            // INFORMAÇÃO EXTRA
             document.add(new Paragraph("\n"));
             Font fonteInfo = new Font(Font.FontFamily.HELVETICA, 10, Font.ITALIC);
-            document.add(new Paragraph("Quantidade de despesas realizadas: " + movimentacaos.size(), fonteInfo));
+            // .size() alterado para .tamanho()
+            document.add(new Paragraph("Quantidade de despesas realizadas: " + movimentacaos.tamanho(), fonteInfo));
 
         } catch (DocumentException | IOException e) {
             throw new Exception("Erro ao criar ou escrever no arquivo PDF: " + e.getMessage());

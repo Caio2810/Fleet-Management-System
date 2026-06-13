@@ -1,25 +1,17 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package persistencia;
 
-import java.util.ArrayList;
+import estruturas.ListaEncadeada;
 import modelos.classes.Veiculo;
 import modelos.classes.EstadoDoVeiculo;
 import modelos.interfaces.IVeiculosCRUD;
-
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.FileReader;
 import java.io.FileWriter;
 
 public class VeiculosDAO implements IVeiculosCRUD {
-
-    // Atributos
     private String nomeDoArquivoNoDisco = null;
 
-    // Construtor
     public VeiculosDAO() {
         nomeDoArquivoNoDisco = "./src/bancodedados/TiposDeVeiculos.txt";
     }
@@ -29,10 +21,9 @@ public class VeiculosDAO implements IVeiculosCRUD {
         try {
             FileWriter fw = new FileWriter(nomeDoArquivoNoDisco, true);
             BufferedWriter bw = new BufferedWriter(fw);
-            // Grava todos os atributos
-            String str = veiculo.getIdDeVeiculo() + ";";
-            str += veiculo.isEstadoDoVeiculo().name() + ";";
-            str += veiculo.getPlaca() + ";";
+            String str = veiculo.getIdDeVeiculo() + ";"
+                    + veiculo.isEstadoDoVeiculo().name() + ";"
+                    + veiculo.getPlaca() + ";";
             str += veiculo.getMarca() + ";";
             str += veiculo.getModelo() + ";";
             str += veiculo.getAnoDeFabricacao() + "\n";
@@ -45,27 +36,25 @@ public class VeiculosDAO implements IVeiculosCRUD {
     }
 
     @Override
-    public ArrayList<Veiculo> listarVeiculos() throws Exception {
+    public ListaEncadeada<Veiculo> listarVeiculos() throws Exception {
         try {
-            ArrayList<Veiculo> listaDeVeiculos = new ArrayList<>();
+            ListaEncadeada<Veiculo> listaDeVeiculos = new ListaEncadeada<>();
             FileReader fr = new FileReader(nomeDoArquivoNoDisco);
             BufferedReader br = new BufferedReader(fr);
 
             String linha = "";
             while ((linha = br.readLine()) != null) {
-                if (linha.trim().isEmpty())
-                    continue;
+                if (linha.trim().isEmpty()) continue;
                 String vetorStr[] = linha.split(";");
-                if (vetorStr.length < 6)
-                    continue;
+                if (vetorStr.length < 6) continue;
                 Veiculo objVeiculo = new Veiculo(
-                        vetorStr[0], // id
-                        vetorStr[2], // placa
-                        vetorStr[3], // marca
-                        vetorStr[4], // modelo
-                        Integer.parseInt(vetorStr[5]), // ano
+                        vetorStr[0],
+                        vetorStr[2],
+                        vetorStr[3],
+                        vetorStr[4],
+                        Integer.parseInt(vetorStr[5]),
                         EstadoDoVeiculo.valueOf(vetorStr[1].trim().toUpperCase()));
-                listaDeVeiculos.add(objVeiculo);
+                listaDeVeiculos.adicionar(objVeiculo);
             }
             br.close();
             return listaDeVeiculos;
@@ -93,12 +82,12 @@ public class VeiculosDAO implements IVeiculosCRUD {
     @Override
     public void atualizar(Veiculo veiculo) throws Exception {
         try {
-            ArrayList<Veiculo> lista = listarVeiculos();
+            ListaEncadeada<Veiculo> lista = listarVeiculos();
 
             boolean encontrou = false;
-            for (int i = 0; i < lista.size(); i++) {
-                if (lista.get(i).getIdDeVeiculo().equals(veiculo.getIdDeVeiculo())) {
-                    lista.set(i, veiculo);
+            for (int i = 0; i < lista.tamanho(); i++) {
+                if (lista.obter(i).getIdDeVeiculo().equals(veiculo.getIdDeVeiculo())) {
+                    lista.definir(i, veiculo);
                     encontrou = true;
                     break;
                 }
@@ -131,7 +120,7 @@ public class VeiculosDAO implements IVeiculosCRUD {
     @Override
     public void remover(String veiculoID) throws Exception {
         try {
-            ArrayList<Veiculo> lista = this.listarVeiculos();
+            ListaEncadeada<Veiculo> lista = this.listarVeiculos();
             FileWriter fw = new FileWriter(nomeDoArquivoNoDisco);
             BufferedWriter bw = new BufferedWriter(fw);
 
@@ -155,14 +144,14 @@ public class VeiculosDAO implements IVeiculosCRUD {
     }
 
     @Override
-    public ArrayList<Veiculo> listarVeiculosInativos() throws Exception {
+    public ListaEncadeada<Veiculo> listarVeiculosInativos() throws Exception {
         try {
-            ArrayList<Veiculo> todosVeiculos = listarVeiculos();
-            ArrayList<Veiculo> veiculosInativos = new ArrayList<>();
+            ListaEncadeada<Veiculo> todosVeiculos = listarVeiculos();
+            ListaEncadeada<Veiculo> veiculosInativos = new ListaEncadeada<>();
 
             for (Veiculo veiculo : todosVeiculos) {
                 if (veiculo.isEstadoDoVeiculo() == EstadoDoVeiculo.INATIVO) {
-                    veiculosInativos.add(veiculo);
+                    veiculosInativos.adicionar(veiculo);
                 }
             }
 
@@ -176,7 +165,7 @@ public class VeiculosDAO implements IVeiculosCRUD {
     @Override
     public String contadorVeiculosAtivos() throws Exception {
         try {
-            ArrayList<Veiculo> todosVeiculos = listarVeiculos();
+            ListaEncadeada<Veiculo> todosVeiculos = listarVeiculos();
             int contador = 0;
 
             for (Veiculo veiculo : todosVeiculos) {

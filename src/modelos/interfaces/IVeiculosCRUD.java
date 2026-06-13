@@ -3,7 +3,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Interface.java to edit this template
  */
 package modelos.interfaces;
-import java.util.ArrayList;
+import estruturas.ListaEncadeada;
 import modelos.classes.Veiculo;
 // import modelos.classes.EstadoDoVeiculo;
 
@@ -11,8 +11,8 @@ public interface IVeiculosCRUD {
     void salvar(Veiculo veiculo) throws Exception;
     void remover(String veiculoID) throws  Exception;
     void atualizar(Veiculo veiculo) throws Exception;
-    ArrayList<Veiculo> listarVeiculos() throws Exception;
-    ArrayList<Veiculo> listarVeiculosInativos() throws Exception;
+    ListaEncadeada<Veiculo> listarVeiculos() throws Exception;
+    ListaEncadeada<Veiculo> listarVeiculosInativos() throws Exception;
     Veiculo buscarPorId(String idVeiculo) throws Exception;
     String contadorVeiculosAtivos() throws Exception;
     // Veiculo buscarPorPlaca(int placa) throws Exception;
