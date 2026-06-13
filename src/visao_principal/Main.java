@@ -22,8 +22,6 @@ import visao_widgets.telas_prontas.TelaVeiculos;
  */
 public class Main extends javax.swing.JFrame {
 
-    private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(Main.class.getName());
-
     private TelaHome telaHome;
     private TelaDespesas telaDespesas;
     private TelaVeiculos telaVeiculos;

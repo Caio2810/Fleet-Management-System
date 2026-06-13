@@ -4,8 +4,6 @@
  */
 package modelos.classes.classes_visao;
 
-import javax.swing.Icon;
-
 /**
  *
  * @author caioaraujocunha

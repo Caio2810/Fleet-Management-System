@@ -4,9 +4,8 @@
  */
 package visao_widgets.paineis_de_telas;
 
-import java.util.ArrayList;
-
 import controle.ControladoraMovimentacao;
+import estruturas.ListaEncadeada;
 import modelos.classes.Movimentacao;
 
 
@@ -196,17 +195,16 @@ public class Relatorio2 extends javax.swing.JPanel {
         comboBoxMes.setSelectedIndex(0);
     }
 
-    private void gerarRelatorio(int mes, int ano, String mesNome) throws Exception {
-        try {
-            ArrayList<Movimentacao> listarMovimentacoesPorMes = controladoraMovimentacao.listarMovimentacoesPorMes(mes,
-                    ano);
-            double totalGasto = controladoraMovimentacao.calcularSomatorioPorMes(listarMovimentacoesPorMes);
-
-            controladoraMovimentacao.gerarRelatorio2MensalPDF(mes, ano, mesNome, totalGasto, listarMovimentacoesPorMes);
-        } catch (Exception e) {
-            // todo: arrumar erro
+        private void gerarRelatorio(int mes, int ano, String mesNome) throws Exception {
+                try {
+                // Modificado para usar ListaEncadeada
+                ListaEncadeada<Movimentacao> listarMovimentacoesPorMes = controladoraMovimentacao.listarMovimentacoesPorMes(mes, ano);
+                double totalGasto = controladoraMovimentacao.calcularSomatorioPorMes(listarMovimentacoesPorMes);
+                controladoraMovimentacao.gerarRelatorio2MensalPDF(mes, ano, mesNome, totalGasto, listarMovimentacoesPorMes);
+                } catch (Exception e) {
+                throw new Exception(e.getMessage());
+                }
         }
-    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JToggleButton btGerarRelatorio;

@@ -7,11 +7,11 @@ package visao_widgets.paineis_de_telas;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
-import java.util.ArrayList;
 
 import javax.swing.SwingUtilities;
 
 import controle.ControladoraMovimentacao;
+import estruturas.ListaEncadeada;
 import modelos.classes.TipoDeDespesa;
 import modelos.classes.Veiculo;
 
@@ -30,8 +30,10 @@ public class AdicionarMovimentacaoPanel extends javax.swing.JPanel {
      */
     private ControladoraMovimentacao controladora;
     private JTable tabelaMovimentacoes;
-    private ArrayList<Veiculo> listaVeiculos;
-    private ArrayList<TipoDeDespesa> listaDeDespesas;
+
+    // CORRIGIDO: Modificado de ArrayList para ListaEncadeada
+    private ListaEncadeada<Veiculo> listaVeiculos;
+    private ListaEncadeada<TipoDeDespesa> listaDeDespesas;
 
     public AdicionarMovimentacaoPanel(JTable tabelaMovimentacoes) {
         this.tabelaMovimentacoes = tabelaMovimentacoes;
@@ -253,21 +255,21 @@ public class AdicionarMovimentacaoPanel extends javax.swing.JPanel {
                                 .addGap(30, 30, 30)));
     }// </editor-fold>//GEN-END:initComponents
 
-    private void textFieldAno1ActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_textFieldAno1ActionPerformed
-        // TODO add your handling code here:
-    }// GEN-LAST:event_textFieldAno1ActionPerformed
+    // private void textFieldAno1ActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_textFieldAno1ActionPerformed
+    //     // TODO add your handling code here:
+    // }// GEN-LAST:event_textFieldAno1ActionPerformed
 
-    private void textFieldMarcaActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_textFieldMarcaActionPerformed
-        // TODO add your handling code here:
-    }// GEN-LAST:event_textFieldMarcaActionPerformed
+    // private void textFieldMarcaActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_textFieldMarcaActionPerformed
+    //     // TODO add your handling code here:
+    // }// GEN-LAST:event_textFieldMarcaActionPerformed
 
-    private void textFieldModeloActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_textFieldModeloActionPerformed
-        // TODO add your handling code here:
-    }// GEN-LAST:event_textFieldModeloActionPerformed
+    // private void textFieldModeloActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_textFieldModeloActionPerformed
+    //     // TODO add your handling code here:
+    // }// GEN-LAST:event_textFieldModeloActionPerformed
 
-    private void textFieldAnoActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_textFieldAnoActionPerformed
-        // TODO add your handling code here:
-    }// GEN-LAST:event_textFieldAnoActionPerformed
+    // private void textFieldAnoActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_textFieldAnoActionPerformed
+    //     // TODO add your handling code here:
+    // }// GEN-LAST:event_textFieldAnoActionPerformed
 
     @Override
     protected void paintComponent(Graphics g) {
@@ -345,10 +347,10 @@ public class AdicionarMovimentacaoPanel extends javax.swing.JPanel {
     private void carregarComboBoxVeiculos() {
         try {
             listaVeiculos = controladora.listarVeiculos();
-
             comboBoxVeiculos.removeAllItems();
 
-            if (listaVeiculos.isEmpty()) {
+            // CORRIGIDO: Alterado de .isEmpty() para .estaVazia()
+            if (listaVeiculos.estaVazia()) {
                 comboBoxVeiculos.addItem("Nenhum veículo disponível");
                 return;
             }
@@ -358,12 +360,7 @@ public class AdicionarMovimentacaoPanel extends javax.swing.JPanel {
 
             for (Veiculo v : listaVeiculos) {
                 String itemFormatado = String.format("%s - %s, %s, %s, %d",
-                        v.getIdDeVeiculo(), // 1. ID (O que a split() irá pegar)
-                        v.getPlaca(), // 2. Placa
-                        v.getMarca(), // 3. Marca
-                        v.getModelo(), // 4. Modelo
-                        v.getAnoDeFabricacao());// 5. Ano (int)
-
+                        v.getIdDeVeiculo(), v.getPlaca(), v.getMarca(), v.getModelo(), v.getAnoDeFabricacao());
                 comboBoxVeiculos.addItem(itemFormatado);
             }
         } catch (Exception e) {
@@ -376,10 +373,10 @@ public class AdicionarMovimentacaoPanel extends javax.swing.JPanel {
     private void carregarComboBoxDespesas() {
         try {
             listaDeDespesas = controladora.listarTiposDeDespesa();
-
             comboBoxDespesa.removeAllItems();
 
-            if (listaDeDespesas.isEmpty()) {
+            // CORRIGIDO: Alterado de .isEmpty() para .estaVazia()
+            if (listaDeDespesas.estaVazia()) {
                 comboBoxDespesa.addItem("Nenhuma despesa disponível");
                 return;
             }
@@ -388,13 +385,9 @@ public class AdicionarMovimentacaoPanel extends javax.swing.JPanel {
             comboBoxDespesa.setSelectedIndex(0);
 
             for (TipoDeDespesa d : listaDeDespesas) {
-                String itemFormatado = String.format("%s - %s",
-                        d.getIdTipoDeDespesa(),
-                        d.getDescricao());
-
+                String itemFormatado = String.format("%s - %s", d.getIdTipoDeDespesa(), d.getDescricao());
                 comboBoxDespesa.addItem(itemFormatado);
             }
-
         } catch (Exception e) {
             System.err.println("Erro ao carregar veículos para ComboBox: " + e.getMessage());
             comboBoxDespesa.removeAllItems();

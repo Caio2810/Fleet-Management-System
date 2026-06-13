@@ -7,11 +7,10 @@ package visao_widgets.paineis_de_telas;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
-import java.util.ArrayList;
-
 import javax.swing.SwingUtilities;
 
 import controle.ControladoraMovimentacao;
+import estruturas.ListaEncadeada;
 import modelos.classes.Movimentacao;
 import modelos.classes.TipoDeDespesa;
 import modelos.classes.Veiculo;
@@ -32,8 +31,8 @@ public class EditarMovimentacaoPanel extends javax.swing.JPanel {
     private String movimentacaoIDAtual;
     private ControladoraMovimentacao controladora;
     private JTable tabelaMovimentacoes;
-    private ArrayList<Veiculo> listaVeiculos;
-    private ArrayList<TipoDeDespesa> listaDeDespesas;
+    private ListaEncadeada<Veiculo> listaVeiculos;
+    private ListaEncadeada<TipoDeDespesa> listaDeDespesas; //
 
     public EditarMovimentacaoPanel(JTable tabelaMovimentacoes) {
         this.tabelaMovimentacoes = tabelaMovimentacoes;
@@ -296,32 +295,26 @@ public class EditarMovimentacaoPanel extends javax.swing.JPanel {
 
         if (veiculoItem != null && veiculoItem.contains(" - VEÍCULO EXCLUÍDO]")) {
             JOptionPane.showMessageDialog(this,
-                    "Não é possível editar a movimentação com um Veículo marcado como 'EXCLUÍDO'. Por favor, selecione outro veículo.",
-                    "Erro de Vinculação", JOptionPane.WARNING_MESSAGE);
+                    "Não é possível editar a movimentação com um Veículo marcado como 'EXCLUÍDO'.", "Erro",
+                    JOptionPane.WARNING_MESSAGE);
             return;
         }
 
         if (despesaItem != null && despesaItem.contains(" - DESPESA EXCLUÍDA]")) {
             JOptionPane.showMessageDialog(this,
-                    "Não é possível editar a movimentação com uma Despesa marcada como 'EXCLUÍDA'. Por favor, selecione outra despesa.",
-                    "Erro de Vinculação", JOptionPane.WARNING_MESSAGE);
+                    "Não é possível editar a movimentação com uma Despesa marcada como 'EXCLUÍDA'.", "Erro",
+                    JOptionPane.WARNING_MESSAGE);
             return;
         }
 
-        if (veiculoItem != null && veiculoItem.contains(" - ")) {
+        if (veiculoItem != null && veiculoItem.contains(" - "))
             idDeVeiculo = veiculoItem.split(" - ", 2)[0].trim();
-        }
-        if (despesaItem != null && despesaItem.contains(" - ")) {
+        if (despesaItem != null && despesaItem.contains(" - "))
             idTipoDeDespesa = despesaItem.split(" - ", 2)[0].trim();
-        }
 
-        if (idDeVeiculo == null || idTipoDeDespesa == null ||
-                veiculoItem.equals("Selecione um veículo") ||
-                despesaItem.equals("Selecione uma despesa") ||
-                data.isEmpty() || valorStr.isEmpty()) {
-
-            JOptionPane.showMessageDialog(this,
-                    "Selecione o veículo, a despesa e preencha a data e o valor.",
+        if (idDeVeiculo == null || idTipoDeDespesa == null || veiculoItem.equals("Selecione um veículo")
+                || despesaItem.equals("Selecione uma despesa") || data.isEmpty() || valorStr.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Selecione o veículo, a despesa e preencha a data e o valor.",
                     "Erro de Validação", JOptionPane.WARNING_MESSAGE);
             return;
         }
@@ -329,34 +322,22 @@ public class EditarMovimentacaoPanel extends javax.swing.JPanel {
         try {
             valorStr = valorStr.replace(",", ".");
             double valor = Double.parseDouble(valorStr);
-
             int valorInt = (int) Math.round(valor);
 
-            Movimentacao movAtualizada = new Movimentacao(
-                    this.movimentacaoIDAtual,
-                    idDeVeiculo,
-                    idTipoDeDespesa,
-                    descricao,
-                    data,
-                    valorInt);
+            Movimentacao movAtualizada = new Movimentacao(this.movimentacaoIDAtual, idDeVeiculo, idTipoDeDespesa,
+                    descricao, data, valorInt);
 
+            // CORRIGIDO: Chama o método correto da controladora, que já atualiza o arquivo
+            // e recarrega a tabela.
             controladora.atualizarMovimentacao(movAtualizada, tabelaMovimentacoes);
 
             JDialog dialog = (JDialog) SwingUtilities.getWindowAncestor(this);
             dialog.dispose();
-
-            JOptionPane.showMessageDialog(null,
-                    "Movimentação atualizada com sucesso!",
-                    "Sucesso!", JOptionPane.INFORMATION_MESSAGE);
-
-        } catch (NumberFormatException e) {
-            JOptionPane.showMessageDialog(this,
-                    "Erro: O campo Valor deve ser um número válido (ex: 120.50).",
-                    "Erro de Formato", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(null, "Movimentação atualizada com sucesso!", "Sucesso!",
+                    JOptionPane.INFORMATION_MESSAGE);
         } catch (Exception e) {
-            JOptionPane.showMessageDialog(this,
-                    "Erro ao atualizar movimentação:\n" + e.getMessage(),
-                    "Erro de Persistência", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Erro ao atualizar movimentação:\n" + e.getMessage(), "Erro",
+                    JOptionPane.ERROR_MESSAGE);
         }
     }
 
@@ -369,12 +350,8 @@ public class EditarMovimentacaoPanel extends javax.swing.JPanel {
         if (movimentacao != null) {
             if (veiculoOriginal != null) {
                 String veiculoString = String.format("%s - %s, %s, %s, %d",
-                        veiculoOriginal.getIdDeVeiculo(), // 1. ID
-                        veiculoOriginal.getPlaca(), // 2. Placa
-                        veiculoOriginal.getMarca(), // 3. Marca
-                        veiculoOriginal.getModelo(), // 4. Modelo
-                        veiculoOriginal.getAnoDeFabricacao()); // 5. Ano (int)
-
+                        veiculoOriginal.getIdDeVeiculo(), veiculoOriginal.getPlaca(), veiculoOriginal.getMarca(),
+                        veiculoOriginal.getModelo(), veiculoOriginal.getAnoDeFabricacao());
                 comboBoxVeiculos.setSelectedItem(veiculoString);
             } else {
                 String veiculoExcluidoStr = "[ID " + movimentacao.getIdDeVeiculo() + " - VEÍCULO EXCLUÍDO]";
@@ -386,10 +363,8 @@ public class EditarMovimentacaoPanel extends javax.swing.JPanel {
         textFieldValor.setText(String.format("%.2f", (double) movimentacao.getValor()));
 
         if (despesaOriginal != null) {
-            String despesaString = String.format("%s - %s",
-                    despesaOriginal.getIdTipoDeDespesa(),
+            String despesaString = String.format("%s - %s", despesaOriginal.getIdTipoDeDespesa(),
                     despesaOriginal.getDescricao());
-
             comboBoxDespesa.setSelectedItem(despesaString);
             textFieldDescricao.setText(movimentacao.getDescricao());
             textFieldData.setText(movimentacao.getData());
@@ -398,16 +373,14 @@ public class EditarMovimentacaoPanel extends javax.swing.JPanel {
             comboBoxDespesa.addItem(despesaExcluidaStr);
             comboBoxDespesa.setSelectedItem(despesaExcluidaStr);
         }
-
     }
 
     private void carregarComboBoxVeiculos() {
         try {
             listaVeiculos = controladora.listarVeiculos();
-
             comboBoxVeiculos.removeAllItems();
 
-            if (listaVeiculos.isEmpty()) {
+            if (listaVeiculos.estaVazia()) { // .isEmpty() alterado para .estaVazia()
                 comboBoxVeiculos.addItem("Nenhum veículo disponível");
                 return;
             }
@@ -417,19 +390,10 @@ public class EditarMovimentacaoPanel extends javax.swing.JPanel {
 
             for (Veiculo v : listaVeiculos) {
                 String itemFormatado = String.format("%s - %s, %s, %s, %d",
-                        v.getIdDeVeiculo(), // 1. ID
-                        v.getPlaca(), // 2. Placa
-                        v.getMarca(), // 3. Marca
-                        v.getModelo(), // 4. Modelo
-                        v.getAnoDeFabricacao());// 5. Ano (int)
-
+                        v.getIdDeVeiculo(), v.getPlaca(), v.getMarca(), v.getModelo(), v.getAnoDeFabricacao());
                 comboBoxVeiculos.addItem(itemFormatado);
             }
-
-            System.out.println(listaVeiculos);
-
         } catch (Exception e) {
-            System.err.println("Erro ao carregar veículos para ComboBox: " + e.getMessage());
             comboBoxVeiculos.removeAllItems();
             comboBoxVeiculos.addItem("Erro ao carregar dados.");
         }
@@ -438,10 +402,9 @@ public class EditarMovimentacaoPanel extends javax.swing.JPanel {
     private void carregarComboBoxDespesas() {
         try {
             listaDeDespesas = controladora.listarTiposDeDespesa();
-
             comboBoxDespesa.removeAllItems();
 
-            if (listaDeDespesas.isEmpty()) {
+            if (listaDeDespesas.estaVazia()) { // .isEmpty() alterado para .estaVazia()
                 comboBoxDespesa.addItem("Nenhuma despesa disponível");
                 return;
             }
@@ -450,15 +413,10 @@ public class EditarMovimentacaoPanel extends javax.swing.JPanel {
             comboBoxDespesa.setSelectedIndex(0);
 
             for (TipoDeDespesa d : listaDeDespesas) {
-                String itemFormatado = String.format("%s - %s",
-                        d.getIdTipoDeDespesa(),
-                        d.getDescricao());
-
+                String itemFormatado = String.format("%s - %s", d.getIdTipoDeDespesa(), d.getDescricao());
                 comboBoxDespesa.addItem(itemFormatado);
             }
-
         } catch (Exception e) {
-            System.err.println("Erro ao carregar veículos para ComboBox: " + e.getMessage());
             comboBoxDespesa.removeAllItems();
             comboBoxDespesa.addItem("Erro ao carregar dados.");
         }
@@ -466,17 +424,13 @@ public class EditarMovimentacaoPanel extends javax.swing.JPanel {
 
     private void comboBoxDespesaActionPerformed(java.awt.event.ActionEvent evt) {
         String itemSelecionado = (String) comboBoxDespesa.getSelectedItem();
-
-        if (itemSelecionado == null ||
-                itemSelecionado.equals("Selecione uma despesa")) {
+        if (itemSelecionado == null || itemSelecionado.equals("Selecione uma despesa")) {
             textFieldDescricao.setText("");
             return;
         }
 
         try {
-            String[] partes = itemSelecionado.split(" - ", 2);
-            String idDespesaSelecionada = partes[0].trim();
-
+            String idDespesaSelecionada = itemSelecionado.split(" - ", 2)[0].trim();
             String descricao = "";
             for (TipoDeDespesa d : listaDeDespesas) {
                 if (d.getIdTipoDeDespesa().equals(idDespesaSelecionada)) {
@@ -484,20 +438,15 @@ public class EditarMovimentacaoPanel extends javax.swing.JPanel {
                     break;
                 }
             }
-
             textFieldDescricao.setText(descricao);
-
         } catch (Exception e) {
-            System.err.println("Erro ao processar seleção de despesa: " + e.getMessage());
             textFieldDescricao.setText("ERRO DE CARREGAMENTO");
         }
     }
 
     private void definirDataField() {
         java.time.LocalDate dataAtual = java.time.LocalDate.now();
-        String dataFormatada = String.format("%02d/%02d/%04d",
-                dataAtual.getDayOfMonth(),
-                dataAtual.getMonthValue(),
+        String dataFormatada = String.format("%02d/%02d/%04d", dataAtual.getDayOfMonth(), dataAtual.getMonthValue(),
                 dataAtual.getYear());
         textFieldData.setText(dataFormatada);
     }

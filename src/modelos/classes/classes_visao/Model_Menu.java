@@ -1,6 +1,5 @@
 package modelos.classes.classes_visao;
 
-import javax.swing.Icon;
 import javax.swing.ImageIcon;
 
 public class Model_Menu {

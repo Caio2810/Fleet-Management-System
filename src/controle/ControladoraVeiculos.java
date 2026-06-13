@@ -46,7 +46,7 @@ public class ControladoraVeiculos {
             dao.salvar(v);
             carregarTabela(tabela);
         } catch (Exception e) {
-            String msg = "ControladoraVeiculos - Metodo Incluir Veiculo - " + e.getMessage();
+            // String msg = "ControladoraVeiculos - Metodo Incluir Veiculo - " + e.getMessage();
             throw new Exception(e);
         }
     }
@@ -74,7 +74,7 @@ public class ControladoraVeiculos {
             dao.remover(veiculoID);
             carregarTabela(tabela);
         } catch (Exception e) {
-            String msg = "ControladoraVeiculos - Metodo Remover Veiculo - " + e.getMessage();
+            // String msg = "ControladoraVeiculos - Metodo Remover Veiculo - " + e.getMessage();
             throw new Exception(e);
         }
     }
@@ -84,7 +84,6 @@ public class ControladoraVeiculos {
             dao.atualizar(veiculo);
             carregarTabela(tabela);
         } catch (Exception e) {
-            String msg = "ControladoraVeiculos - Metodo Atualizar Veiculo - " + e.getMessage();
             throw new Exception(e);
         }
     }
@@ -93,7 +92,6 @@ public class ControladoraVeiculos {
         try {
             return dao.buscarPorId(veiculoID);
         } catch (Exception e) {
-            String msg = "ControladoraVeiculos - Metodo Buscar Veiculo Por ID - " + e.getMessage();
             throw new Exception(e);
         }
     }

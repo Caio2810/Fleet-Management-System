@@ -1,29 +1,21 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JPanel.java to edit this template
- */
-package visao_widgets.telas_prontas; // <-- ADICIONADO/CORRIGIDO
+package visao_widgets.telas_prontas;
 
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.util.Locale;
 import javax.swing.*;
-import java.awt.Frame; // <-- ADICIONADO ESTE IMPORT para o cast do JDialog
+import java.awt.Frame;
 
 import controle.ControladoraDespesas;
 import controle.ControladoraMovimentacao;
 import controle.ControladoraVeiculos;
-import java.util.ArrayList;
+import estruturas.ListaEncadeada; // Alterado de java.util.ArrayList
 import modelos.classes.Movimentacao;
 import modelos.classes.Veiculo;
 import modelos.classes.classes_visao.Model_Card;
 import themes.Theme;
 
-/**
- *
- * @author caioaraujocunha
- */
 public class TelaHome extends javax.swing.JPanel {
 
     ControladoraVeiculos controladoraVeiculos = new ControladoraVeiculos();
@@ -37,10 +29,6 @@ public class TelaHome extends javax.swing.JPanel {
     }
 
     @SuppressWarnings("unchecked")
-    // <editor-fold defaultstate="collapsed" desc="Generated
-    // <editor-fold defaultstate="collapsed" desc="Generated
-    // <editor-fold defaultstate="collapsed" desc="Generated
-    // <editor-fold defaultstate="collapsed" desc="Generated
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
@@ -50,42 +38,21 @@ public class TelaHome extends javax.swing.JPanel {
         jLabel1 = new javax.swing.JLabel();
         Icon icon = UIManager.getIcon("FileView.fileIcon");
 
-        relatorio1 = new visao_widgets.ReportItem(
-                "Despesas por veículo",
-                icon);
-
-        relatorio2 = new visao_widgets.ReportItem(
-                "Soma geral das despesas de frota em um mês",
-                icon);
-
-        relatorio3 = new visao_widgets.ReportItem(
-                "Gastos com combustível em um mês",
-                icon);
-
-        relatorio4 = new visao_widgets.ReportItem(
-                "Soma do IPVA de um ano da frota",
-                icon);
-
-        relatorio5 = new visao_widgets.ReportItem(
-                "Listar veículos inativos",
-                icon);
-
-        relatorio6 = new visao_widgets.ReportItem(
-                "Relatório das multas pagas por veículo em um ano",
-                icon);
+        relatorio1 = new visao_widgets.ReportItem("Despesas por veículo", icon);
+        relatorio2 = new visao_widgets.ReportItem("Soma geral das despesas de frota in um mês", icon);
+        relatorio3 = new visao_widgets.ReportItem("Gastos com combustível em um mês", icon);
+        relatorio4 = new visao_widgets.ReportItem("Soma do IPVA de um ano da frota", icon);
+        relatorio5 = new visao_widgets.ReportItem("Listar veículos inativos", icon);
+        relatorio6 = new visao_widgets.ReportItem("Relatório das multas pagas por veículo em um ano", icon);
 
         setBackground(Theme.BACKGROUND);
-
         card1.setForeground(Theme.CARDCOLOR);
-
         card2.setForeground(Theme.CARDCOLOR);
-
         formPageBorder1.setBackground(Theme.CARDCOLOR);
 
         jLabel1.setFont(new java.awt.Font("DIN Alternate", 0, 24)); // NOI18N
         jLabel1.setText("RELATÓRIOS");
 
-//        relatorio3.setText("Total de gastos com combustível em um determinado mês");
         relatorio3.addMouseListener(new java.awt.event.MouseAdapter() {
             @Override
             public void mouseClicked(java.awt.event.MouseEvent evt) {
@@ -93,7 +60,6 @@ public class TelaHome extends javax.swing.JPanel {
             }
         });
 
-//        relatorio4.setText("Somatório do IPVA de um determinado ano de toda a frota");
         relatorio4.addMouseListener(new java.awt.event.MouseAdapter() {
             @Override
             public void mouseClicked(java.awt.event.MouseEvent evt) {
@@ -101,7 +67,6 @@ public class TelaHome extends javax.swing.JPanel {
             }
         });
 
-//        relatorio2.setText("Soma geral das despesas da frota em um determinado mês");
         relatorio2.addMouseListener(new java.awt.event.MouseAdapter() {
             @Override
             public void mouseClicked(java.awt.event.MouseEvent evt) {
@@ -109,7 +74,6 @@ public class TelaHome extends javax.swing.JPanel {
             }
         });
 
-//        relatorio1.setText("Despesas realizadas em um veículo");
         relatorio1.addMouseListener(new java.awt.event.MouseAdapter() {
             @Override
             public void mouseClicked(java.awt.event.MouseEvent evt) {
@@ -117,7 +81,6 @@ public class TelaHome extends javax.swing.JPanel {
             }
         });
 
-//        relatorio5.setText("Listar todos os veículos inativos na frota");
         relatorio5.addMouseListener(new java.awt.event.MouseAdapter() {
             @Override
             public void mouseClicked(java.awt.event.MouseEvent evt) {
@@ -125,7 +88,6 @@ public class TelaHome extends javax.swing.JPanel {
             }
         });
 
-//        relatorio6.setText("Relatório das multas pagas por veículo em um determinado ano");
         relatorio6.addMouseListener(new java.awt.event.MouseAdapter() {
             @Override
             public void mouseClicked(java.awt.event.MouseEvent evt) {
@@ -203,129 +165,77 @@ public class TelaHome extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     private void relatorio3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_relatorio3ActionPerformed
-        // TODO add your handling code here:
         try {
             visao_widgets.paineis_de_telas.Relatorio3 formPanel = new visao_widgets.paineis_de_telas.Relatorio3();
-
-            JDialog dialog = new JDialog(
-                    (Frame) SwingUtilities.getWindowAncestor(this),
-                    "Relatório: Somatório Gasto com Gasolina da Frota Mensal",
-                    true);
-
+            JDialog dialog = new JDialog((Frame) SwingUtilities.getWindowAncestor(this), "Relatório: Somatório Gasto com Gasolina da Frota Mensal", true);
             dialog.setContentPane(formPanel);
             dialog.pack();
             dialog.setLocationRelativeTo(this);
             dialog.setVisible(true);
-
         } catch (Exception erro) {
-            javax.swing.JOptionPane.showMessageDialog(this,
-                    "Erro ao abrir o relatório: " + erro.getMessage(),
-                    "Erro",
-                    javax.swing.JOptionPane.ERROR_MESSAGE);
+            javax.swing.JOptionPane.showMessageDialog(this, "Erro ao abrir o relatório: " + erro.getMessage(), "Erro", javax.swing.JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_relatorio3ActionPerformed
 
     private void relatorio4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_relatorio4ActionPerformed
-        // TODO add your handling code here:
         try {
             visao_widgets.paineis_de_telas.Relatorio4 formPanel = new visao_widgets.paineis_de_telas.Relatorio4();
-
-            JDialog dialog = new JDialog(
-                    (Frame) SwingUtilities.getWindowAncestor(this),
-                    "Relatório: Somatório do IPVA de um determinado ano de toda a frota;",
-                    true);
-
+            JDialog dialog = new JDialog((Frame) SwingUtilities.getWindowAncestor(this), "Relatório: Somatório do IPVA de um determinado ano de toda a frota;", true);
             dialog.setContentPane(formPanel);
             dialog.pack();
             dialog.setLocationRelativeTo(this);
             dialog.setVisible(true);
-
         } catch (Exception erro) {
-            javax.swing.JOptionPane.showMessageDialog(this,
-                    "Erro ao abrir o relatório: " + erro.getMessage(),
-                    "Erro",
-                    javax.swing.JOptionPane.ERROR_MESSAGE);
+            javax.swing.JOptionPane.showMessageDialog(this, "Erro ao abrir o relatório: " + erro.getMessage(), "Erro", javax.swing.JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_relatorio4ActionPerformed
 
     private void relatorio5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_relatorio5ActionPerformed
-        // TODO add your handling code here:
         try {
-            ArrayList<Veiculo> listarVeiculosInativos = controladoraVeiculos.listarVeiculosInativos();
-
+            // Alterado para receber ListaEncadeada do controle refatorado
+            ListaEncadeada<Veiculo> listarVeiculosInativos = controladoraVeiculos.listarVeiculosInativos();
             controladoraVeiculos.gerarRelatorio5PDF(listarVeiculosInativos);
         } catch (Exception e) {
-            // todo: arrumar erro
+            javax.swing.JOptionPane.showMessageDialog(this, "Erro ao gerar relatório 5: " + e.getMessage(), "Erro", javax.swing.JOptionPane.ERROR_MESSAGE);
         }
-
     }//GEN-LAST:event_relatorio5ActionPerformed
 
     private void relatorio6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_relatorio6ActionPerformed
-        // TODO add your handling code here:
         try {
             visao_widgets.paineis_de_telas.Relatorio6 formPanel = new visao_widgets.paineis_de_telas.Relatorio6();
-
-            JDialog dialog = new JDialog(
-                    (Frame) SwingUtilities.getWindowAncestor(this), // <--- CAST CORRIGIDO
-                    "Relatório: Multas pagas por veículo em um determinado ano.",
-                    true);
-
+            JDialog dialog = new JDialog((Frame) SwingUtilities.getWindowAncestor(this), "Relatório: Multas pagas por veículo em um determinado ano.", true);
             dialog.setContentPane(formPanel);
             dialog.pack();
             dialog.setLocationRelativeTo(this);
             dialog.setVisible(true);
-
         } catch (Exception erro) {
-            javax.swing.JOptionPane.showMessageDialog(this,
-                    "Erro ao abrir o relatório: " + erro.getMessage(),
-                    "Erro",
-                    javax.swing.JOptionPane.ERROR_MESSAGE);
+            javax.swing.JOptionPane.showMessageDialog(this, "Erro ao abrir o relatório: " + erro.getMessage(), "Erro", javax.swing.JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_relatorio6ActionPerformed
 
     private void relatorio1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_relatorio1ActionPerformed
-        // TODO add your handling code here:
         try {
             visao_widgets.paineis_de_telas.Relatorio1 formPanel = new visao_widgets.paineis_de_telas.Relatorio1();
-
-            JDialog dialog = new JDialog(
-                    (Frame) SwingUtilities.getWindowAncestor(this), // <--- CAST CORRIGIDO
-                    "Relatório: Despesas realizadas em um determinado veículo;s",
-                    true);
-
+            JDialog dialog = new JDialog((Frame) SwingUtilities.getWindowAncestor(this), "Relatório: Despesas realizadas em um determinado veículo;s", true);
             dialog.setContentPane(formPanel);
             dialog.pack();
             dialog.setLocationRelativeTo(this);
             dialog.setVisible(true);
-
         } catch (Exception erro) {
-            javax.swing.JOptionPane.showMessageDialog(this,
-                    "Erro ao abrir o relatório: " + erro.getMessage(),
-                    "Erro",
-                    javax.swing.JOptionPane.ERROR_MESSAGE);
+            javax.swing.JOptionPane.showMessageDialog(this, "Erro ao abrir o relatório: " + erro.getMessage(), "Erro", javax.swing.JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_relatorio1ActionPerformed
 
-    private void relatorio2ActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_relatorio2ActionPerformed
-        // TODO add your handling code here:
+    private void relatorio2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_relatorio2ActionPerformed
         try {
             visao_widgets.paineis_de_telas.Relatorio2 formPanel = new visao_widgets.paineis_de_telas.Relatorio2();
-
-            JDialog dialog = new JDialog(
-                    (Frame) SwingUtilities.getWindowAncestor(this), // <--- CAST CORRIGIDO
-                    "Relatório: Somatório Mensal de Despesas",
-                    true);
-
+            JDialog dialog = new JDialog((Frame) SwingUtilities.getWindowAncestor(this), "Relatório: Somatório Mensal de Despesas", true);
             dialog.setContentPane(formPanel);
             dialog.pack();
             dialog.setLocationRelativeTo(this);
             dialog.setVisible(true);
-
         } catch (Exception erro) {
-            javax.swing.JOptionPane.showMessageDialog(this,
-                    "Erro ao abrir o relatório: " + erro.getMessage(),
-                    "Erro",
-                    javax.swing.JOptionPane.ERROR_MESSAGE);
+            javax.swing.JOptionPane.showMessageDialog(this, "Erro ao abrir o relatório: " + erro.getMessage(), "Erro", javax.swing.JOptionPane.ERROR_MESSAGE);
         }
     }
 
@@ -341,8 +251,7 @@ public class TelaHome extends javax.swing.JPanel {
     private void carregadorDadosVeiculoDashboard() {
         try {
             String contadorVeiculosAtivos = controladoraVeiculos.contadorVeiculosAtivos();
-            card1.setData(new Model_Card("TOTAL DE VEÍCULOS", contadorVeiculosAtivos,
-                    "desde o início"));
+            card1.setData(new Model_Card("TOTAL DE VEÍCULOS", contadorVeiculosAtivos, "desde o início"));
         } catch (Exception erro) {
             System.out.println("Erro ao carregar dados de veículos para o dashboard: " + erro.getMessage());
             card1.setData(new Model_Card("Veículos", "0", "Sem dados obtidos"));
@@ -353,9 +262,7 @@ public class TelaHome extends javax.swing.JPanel {
         try {
             double contadorDespesas = controladoraMovimentacao.buscarTotalGastoEmDespesas();
             String valorTemporario = String.format(Locale.US, "%.2f", contadorDespesas);
-
             String valorFormatado = "R$ " + valorTemporario.replace('.', ',');
-
             card2.setData(new Model_Card("TOTAL DE DESPESAS", valorFormatado, "desde o início"));
         } catch (Exception erro) {
             System.out.println("Erro ao carregar dados de veículos para o dashboard: " + erro.getMessage());
@@ -368,7 +275,6 @@ public class TelaHome extends javax.swing.JPanel {
         carregadorDadosMovimentacaoDashboard();
     }
 
-    // Variables declaration - do not modify//GEN-BEGIN:variables
     private visao_widgets.Card card1;
     private visao_widgets.Card card2;
     private visao_widgets.FormPageBorder formPageBorder1;
@@ -379,5 +285,4 @@ public class TelaHome extends javax.swing.JPanel {
     private visao_widgets.ReportItem relatorio4;
     private visao_widgets.ReportItem relatorio5;
     private visao_widgets.ReportItem relatorio6;
-    // End of variables declaration//GEN-END:variables
 }

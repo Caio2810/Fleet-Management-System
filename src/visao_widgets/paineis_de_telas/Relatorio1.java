@@ -4,9 +4,8 @@
  */
 package visao_widgets.paineis_de_telas;
 
-import java.util.ArrayList;
-
 import controle.ControladoraMovimentacao;
+import estruturas.ListaEncadeada;
 import modelos.classes.Movimentacao;
 import modelos.classes.Veiculo;
 
@@ -36,7 +35,8 @@ public class Relatorio1 extends javax.swing.JPanel {
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated
     // <editor-fold defaultstate="collapsed" desc="Generated
-    // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
+    // <editor-fold defaultstate="collapsed" desc="Generated
+    // Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
         jLabel4 = new javax.swing.JLabel();
@@ -63,7 +63,8 @@ public class Relatorio1 extends javax.swing.JPanel {
         jLabel2.setForeground(new java.awt.Color(255, 139, 0));
         jLabel2.setText("Veículo");
 
-        comboBoxVeiculos.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        comboBoxVeiculos.setModel(
+                new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
         comboBoxVeiculos.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
             }
@@ -79,45 +80,54 @@ public class Relatorio1 extends javax.swing.JPanel {
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addGap(25, 25, 25)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel8, javax.swing.GroupLayout.PREFERRED_SIZE, 287, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(jLabel2)
-                        .addGap(28, 28, 28)
-                        .addComponent(comboBoxVeiculos, javax.swing.GroupLayout.PREFERRED_SIZE, 380, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel1, javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(jLabel4, javax.swing.GroupLayout.Alignment.TRAILING))
-                        .addContainerGap())
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addComponent(btGerarRelatorio)
-                        .addGap(182, 182, 182))))
-        );
+                layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(layout.createSequentialGroup()
+                                .addGap(25, 25, 25)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addComponent(jLabel8, javax.swing.GroupLayout.PREFERRED_SIZE, 287,
+                                                javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addGroup(layout.createSequentialGroup()
+                                                .addComponent(jLabel2)
+                                                .addGap(28, 28, 28)
+                                                .addComponent(comboBoxVeiculos, javax.swing.GroupLayout.PREFERRED_SIZE,
+                                                        380, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout
+                                                .createSequentialGroup()
+                                                .addGroup(layout
+                                                        .createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                                        .addComponent(jLabel1,
+                                                                javax.swing.GroupLayout.Alignment.TRAILING)
+                                                        .addComponent(jLabel4,
+                                                                javax.swing.GroupLayout.Alignment.TRAILING))
+                                                .addContainerGap())
+                                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING,
+                                                layout.createSequentialGroup()
+                                                        .addComponent(btGerarRelatorio)
+                                                        .addGap(182, 182, 182)))));
         layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, 0)
-                .addComponent(jLabel1)
-                .addGap(4, 4, 4)
-                .addComponent(jLabel8, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(35, 35, 35)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jLabel2)
-                    .addComponent(comboBoxVeiculos, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(30, 30, 30)
-                .addComponent(btGerarRelatorio)
-                .addContainerGap(21, Short.MAX_VALUE))
-        );
+                layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(layout.createSequentialGroup()
+                                .addContainerGap()
+                                .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 34,
+                                        javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(0, 0, 0)
+                                .addComponent(jLabel1)
+                                .addGap(4, 4, 4)
+                                .addComponent(jLabel8, javax.swing.GroupLayout.PREFERRED_SIZE, 42,
+                                        javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(35, 35, 35)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                        .addComponent(jLabel2)
+                                        .addComponent(comboBoxVeiculos, javax.swing.GroupLayout.PREFERRED_SIZE,
+                                                javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGap(30, 30, 30)
+                                .addComponent(btGerarRelatorio)
+                                .addContainerGap(21, Short.MAX_VALUE)));
     }// </editor-fold>//GEN-END:initComponents
 
     private void comboBoxMesActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_comboBoxMesActionPerformed
@@ -126,7 +136,7 @@ public class Relatorio1 extends javax.swing.JPanel {
 
     private void btGerarRelatorioActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_btGerarRelatorioActionPerformed
         // TODO add your handling code here:
-        String veiculoItem = (String) comboBoxVeiculos.getSelectedItem(); 
+        String veiculoItem = (String) comboBoxVeiculos.getSelectedItem();
 
         if (comboBoxVeiculos.getSelectedIndex() == 0) {
             javax.swing.JOptionPane.showMessageDialog(this,
@@ -155,11 +165,11 @@ public class Relatorio1 extends javax.swing.JPanel {
 
     private void carregarVeiculos() {
         try {
-            ArrayList<Veiculo> listaVeiculos = controladoraMovimentacao.listarVeiculos();
-
+            // Modificado para usar ListaEncadeada
+            ListaEncadeada<Veiculo> listaVeiculos = controladoraMovimentacao.listarVeiculos();
             comboBoxVeiculos.removeAllItems();
 
-            if (listaVeiculos == null || listaVeiculos.isEmpty()) {
+            if (listaVeiculos == null || listaVeiculos.estaVazia()) { // .isEmpty() alterado para .estaVazia()
                 comboBoxVeiculos.addItem("Nenhum veículo disponível");
                 return;
             }
@@ -169,17 +179,10 @@ public class Relatorio1 extends javax.swing.JPanel {
 
             for (Veiculo v : listaVeiculos) {
                 String itemFormatado = String.format("%s - %s, %s, %s, %d",
-                        v.getIdDeVeiculo(), // ID
-                        v.getPlaca(), // Placa
-                        v.getMarca(), // Marca
-                        v.getModelo(), // Modelo
-                        v.getAnoDeFabricacao());// Ano (int)
-
+                        v.getIdDeVeiculo(), v.getPlaca(), v.getMarca(), v.getModelo(), v.getAnoDeFabricacao());
                 comboBoxVeiculos.addItem(itemFormatado);
             }
-
         } catch (Exception e) {
-            System.err.println("Erro ao carregar veículos para ComboBox: " + e.getMessage());
             comboBoxVeiculos.removeAllItems();
             comboBoxVeiculos.addItem("Erro ao carregar dados.");
         }
@@ -187,12 +190,13 @@ public class Relatorio1 extends javax.swing.JPanel {
 
     private void gerarRelatorio(String veiculoID) throws Exception {
         try {
-            ArrayList<Movimentacao> listar = controladoraMovimentacao.listarDespesasDeUmDeterminadoVeiculo(veiculoID);
+            // Modificado para usar ListaEncadeada
+            ListaEncadeada<Movimentacao> listar = controladoraMovimentacao
+                    .listarDespesasDeUmDeterminadoVeiculo(veiculoID);
             double totalGasto = controladoraMovimentacao.calcularTotalDespesasDeUmDeterminadoVeiculo(veiculoID);
-
             controladoraMovimentacao.gerarRelatorio1PDF(veiculoID, totalGasto, listar);
         } catch (Exception e) {
-            // todo: arrumar erro
+            throw new Exception(e.getMessage());
         }
     }
 
