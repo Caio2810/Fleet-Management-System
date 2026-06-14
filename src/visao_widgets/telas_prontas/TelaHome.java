@@ -27,7 +27,6 @@ public class TelaHome extends javax.swing.JPanel {
         atualizarDashboard();
     }
 
-    // @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
@@ -35,14 +34,25 @@ public class TelaHome extends javax.swing.JPanel {
         card2 = new visao_widgets.Card();
         formPageBorder1 = new visao_widgets.FormPageBorder();
         jLabel1 = new javax.swing.JLabel();
-        Icon icon = UIManager.getIcon("FileView.fileIcon");
 
-        relatorio1 = new visao_widgets.ReportItem("Despesas por veículo", icon);
-        relatorio2 = new visao_widgets.ReportItem("Soma geral das despesas de frota em um mês", icon);
-        relatorio3 = new visao_widgets.ReportItem("Gastos com combustível em um mês", icon);
-        relatorio4 = new visao_widgets.ReportItem("Soma do IPVA de um ano da frota", icon);
-        relatorio5 = new visao_widgets.ReportItem("Listar veículos inativos", icon);
-        relatorio6 = new visao_widgets.ReportItem("Relatório das multas pagas por veículo em um ano", icon);
+        // =========================================================================
+        // CARREGAMENTO DOS ÍCONES DA PASTA src/images/
+        // Substitua os nomes dos arquivos (.png, .jpg, etc.) pelos arquivos reais que colocar lá
+        // =========================================================================
+        Icon ic1 = new ImageIcon(getClass().getResource("/imagens/ic_veiculo.png"));
+        Icon ic2 = new ImageIcon(getClass().getResource("/imagens/ic_2.png"));
+        Icon ic3 = new ImageIcon(getClass().getResource("/imagens/ic_gas.png"));
+        Icon ic4 = new ImageIcon(getClass().getResource("/imagens/ic_ipva.png"));
+        Icon ic5 = new ImageIcon(getClass().getResource("/imagens/ic_inactives.png"));
+        Icon ic6 = new ImageIcon(getClass().getResource("/imagens/ic_bills.png"));
+        // =========================================================================
+
+        relatorio1 = new visao_widgets.ReportItem("Despesas por veículo", ic1);
+        relatorio2 = new visao_widgets.ReportItem("Soma geral das despesas de frota em um mês", ic2);
+        relatorio3 = new visao_widgets.ReportItem("Gastos com combustível em um mês", ic3);
+        relatorio4 = new visao_widgets.ReportItem("Soma do IPVA de um ano da frota", ic4);
+        relatorio5 = new visao_widgets.ReportItem("Listar veículos inativos", ic5);
+        relatorio6 = new visao_widgets.ReportItem("Relatório das multas pagas por veículo em um ano", ic6);
 
         setBackground(Theme.BACKGROUND);
         card1.setForeground(Theme.CARDCOLOR);
