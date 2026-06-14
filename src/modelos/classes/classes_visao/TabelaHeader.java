@@ -4,6 +4,8 @@
  */
 package modelos.classes.classes_visao;
 
+import themes.Theme;
+
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
@@ -20,16 +22,16 @@ public class TabelaHeader extends JLabel {
     public TabelaHeader(String text) {
         super(text);
         setOpaque(true);
-        setBackground(Color.WHITE);
+        setBackground(Theme.CARDCOLOR);
         setFont(new Font("sansserif", 1, 12));
-        setForeground(new Color(102, 102, 102));
+        setForeground(Color.WHITE);
         setBorder(new EmptyBorder(10, 5, 10, 5));
     }
 
     @Override
     protected void paintComponent(Graphics grphcs) {
         super.paintComponent(grphcs);
-        grphcs.setColor(new Color(230, 230, 230));
+        grphcs.setColor(Theme.CARDCOLOR);
         grphcs.drawLine(0, getHeight() - 1, getWidth(), getHeight() - 1);
     }
 }

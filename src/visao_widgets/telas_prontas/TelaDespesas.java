@@ -16,6 +16,7 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
 import modelos.classes.classes_visao.ScrollBar;
+import themes.Theme;
 
 /**
  *
@@ -31,16 +32,19 @@ public class TelaDespesas extends javax.swing.JPanel {
     public TelaDespesas() {
         initComponents();
         controladora = new ControladoraDespesas();
-        setOpaque(false);
-        tabela1.setOpaque(false);
 
-        jScrollPane1.setOpaque(false);
-        jScrollPane1.getViewport().setOpaque(false);
+        // CORRIGIDO: Mantendo os componentes opacos para o FlatLaf conseguir estilizar
+        // as tabelas e cabeçalhos
+        tabela1.setOpaque(true);
+        jScrollPane1.setOpaque(true);
+        jScrollPane1.getViewport().setOpaque(true);
+        tabela1.setFillsViewportHeight(true);
+        tabela1.setBackground(Theme.BACKGROUND);
+        jScrollPane1.getViewport().setBackground(Theme.BACKGROUND);
 
         jScrollPane1.setBorder(javax.swing.BorderFactory.createEmptyBorder());
 
         jScrollPane1.setVerticalScrollBar(new ScrollBar());
-        jScrollPane1.getVerticalScrollBar().setBackground(Color.white);
 
         btDeletar.setEnabled(false);
         btEditar.setEnabled(false);
@@ -85,10 +89,12 @@ public class TelaDespesas extends javax.swing.JPanel {
         btDeletar = new javax.swing.JButton();
         btEditar = new javax.swing.JButton();
 
-        setBackground(new java.awt.Color(255, 255, 255));
+        // CORRIGIDO: Substituído o Color(255,255,255) fixo pelas variáveis adaptáveis
+        // do seu Theme
+        setBackground(Theme.BACKGROUND);
         setLayout(new java.awt.BorderLayout());
 
-        panelBorder1.setBackground(new java.awt.Color(255, 255, 255));
+        panelBorder1.setBackground(Theme.BACKGROUND);
 
         tabela1.setModel(new javax.swing.table.DefaultTableModel(
                 new Object[][] {
