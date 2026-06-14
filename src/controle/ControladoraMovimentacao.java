@@ -215,7 +215,7 @@ public class ControladoraMovimentacao {
 
     // RELATORIO 2
     public void gerarRelatorio2MensalPDF(int mes, int ano, String mesNome, double totalGasto,
-            ListaEncadeada<Movimentacao> movimentacaos) throws Exception {
+        ListaEncadeada<Movimentacao> movimentacaos) throws Exception {
         String fileName = "Relatorio_" + mesNome + "_" + ano + ".pdf";
         String userHome = System.getProperty("user.home");
         String desktopPath = userHome + File.separator + "Desktop" + File.separator;
@@ -225,10 +225,12 @@ public class ControladoraMovimentacao {
         String totalFormatado = currencyFormat.format(totalGasto);
 
         Document document = new Document();
+
         try {
             PdfWriter.getInstance(document, new FileOutputStream(filePath));
             document.open();
 
+            // TÍTULO
             Font fonteTitulo = new Font(Font.FontFamily.HELVETICA, 16, Font.BOLD);
             Paragraph titulo = new Paragraph("RELATÓRIO MENSAL DE DESPESAS DA FROTA", fonteTitulo);
             titulo.setAlignment(Element.ALIGN_CENTER);
@@ -236,11 +238,13 @@ public class ControladoraMovimentacao {
 
             document.add(new Paragraph("\n"));
 
+            // MÊS/ANO
             Font fonteNormal = new Font(Font.FontFamily.HELVETICA, 12, Font.NORMAL);
             document.add(new Paragraph("Mês/Ano de Referência: " + mesNome + " / " + ano, fonteNormal));
             document.add(new Paragraph("\n"));
 
-            PdfPTable tabela = new PdfPTable(6);
+            // CRIAR TABELA
+            PdfPTable tabela = new PdfPTable(6); // 6 colunas
             tabela.setWidthPercentage(100);
             tabela.setSpacingBefore(10f);
             tabela.setSpacingAfter(10f);
@@ -248,6 +252,7 @@ public class ControladoraMovimentacao {
             float[] larguraColunas = { 1.5f, 2f, 2f, 3f, 2f, 2f };
             tabela.setWidths(larguraColunas);
 
+            // CABEÇALHO DA TABELA
             Font fonteCabecalho = new Font(Font.FontFamily.HELVETICA, 10, Font.BOLD);
 
             PdfPCell cellCabecalho1 = new PdfPCell(new Phrase("ID", fonteCabecalho));
@@ -280,6 +285,7 @@ public class ControladoraMovimentacao {
             cellCabecalho6.setBackgroundColor(BaseColor.LIGHT_GRAY);
             tabela.addCell(cellCabecalho6);
 
+            // PREENCHER TABELA COM AS MOVIMENTAÇÕES
             Font fonteDados = new Font(Font.FontFamily.HELVETICA, 9, Font.NORMAL);
 
             for (Movimentacao mov : movimentacaos) {
@@ -319,6 +325,41 @@ public class ControladoraMovimentacao {
             Paragraph valorTotal = new Paragraph(totalFormatado, fonteValor);
             valorTotal.setAlignment(Element.ALIGN_RIGHT);
             document.add(valorTotal);
+
+            // =========================================================================
+            // REQUISITO: ANÁLISE ESTATÍSTICA (FUNDAMENTOS MATEMÁTICOS)
+            // =========================================================================
+            if (!movimentacaos.estaVazia()) {
+                double valorMaximo = Double.NEGATIVE_INFINITY;
+                double valorMinimo = Double.POSITIVE_INFINITY;
+
+                // Varredura linear manual para descobrir o Extremo Máximo e o Extremo Mínimo
+                for (Movimentacao mov : movimentacaos) {
+                    if (mov.getValor() > valorMaximo) {
+                        valorMaximo = mov.getValor();
+                    }
+                    if (mov.getValor() < valorMinimo) {
+                        valorMinimo = mov.getValor();
+                    }
+                }
+
+                // Cálculo da Média Aritmética Simples: x̄ = (∑ x_i) / n
+                double valorMedio = totalGasto / movimentacaos.tamanho();
+
+                String maxFormatado = currencyFormat.format(valorMaximo);
+                String minFormatado = currencyFormat.format(valorMinimo);
+                String mediaFormatada = currencyFormat.format(valorMedio);
+
+                document.add(new Paragraph("\n"));
+                Font fonteEstTitulo = new Font(Font.FontFamily.HELVETICA, 12, Font.BOLD, BaseColor.DARK_GRAY);
+                Font fonteEstTexto = new Font(Font.FontFamily.HELVETICA, 11, Font.NORMAL);
+
+                document.add(new Paragraph("Métricas Estatísticas Descritivas (Fundamentos Matemáticos):", fonteEstTitulo));
+                document.add(new Paragraph("• Valor Máximo (Maior despesa única do mês): " + maxFormatado, fonteEstTexto));
+                document.add(new Paragraph("• Valor Mínimo (Menor despesa única do mês): " + minFormatado, fonteEstTexto));
+                document.add(new Paragraph("• Valor Médio (Média aritmética das movimentações): " + mediaFormatada, fonteEstTexto));
+            }
+            // =========================================================================
 
         } catch (DocumentException | IOException e) {
             throw new Exception("Erro ao criar ou escrever no arquivo PDF: " + e.getMessage());

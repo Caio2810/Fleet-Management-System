@@ -10,8 +10,7 @@ import java.awt.Frame;
 import controle.ControladoraDespesas;
 import controle.ControladoraMovimentacao;
 import controle.ControladoraVeiculos;
-import estruturas.ListaEncadeada; // Alterado de java.util.ArrayList
-import modelos.classes.Movimentacao;
+import estruturas.ListaEncadeada;
 import modelos.classes.Veiculo;
 import modelos.classes.classes_visao.Model_Card;
 import themes.Theme;
@@ -28,7 +27,7 @@ public class TelaHome extends javax.swing.JPanel {
         atualizarDashboard();
     }
 
-    @SuppressWarnings("unchecked")
+    // @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
@@ -39,7 +38,7 @@ public class TelaHome extends javax.swing.JPanel {
         Icon icon = UIManager.getIcon("FileView.fileIcon");
 
         relatorio1 = new visao_widgets.ReportItem("Despesas por veículo", icon);
-        relatorio2 = new visao_widgets.ReportItem("Soma geral das despesas de frota in um mês", icon);
+        relatorio2 = new visao_widgets.ReportItem("Soma geral das despesas de frota em um mês", icon);
         relatorio3 = new visao_widgets.ReportItem("Gastos com combustível em um mês", icon);
         relatorio4 = new visao_widgets.ReportItem("Soma do IPVA de um ano da frota", icon);
         relatorio5 = new visao_widgets.ReportItem("Listar veículos inativos", icon);
