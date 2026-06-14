@@ -5,6 +5,8 @@
 package visao_widgets;
 
 import modelos.classes.classes_visao.Model_Menu;
+import themes.Theme;
+
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
@@ -46,9 +48,9 @@ public class MenuItem extends javax.swing.JPanel {
         this.selected = selected;
 
         if (selected) {
-            lbName.setForeground(new Color(255, 139, 0));
+            lbName.setForeground(Theme.SELECTED_MENU_ITEM);
             lbName.setFont(lbName.getFont().deriveFont(Font.BOLD));
-            lbIcon.setIcon(data.selecionarIconeLaranja());
+            lbIcon.setIcon(data.selecionarIconeSelected());
         } else {
             lbName.setForeground(new Color(98, 103, 109));
             lbName.setFont(lbName.getFont().deriveFont(Font.PLAIN));
@@ -58,7 +60,7 @@ public class MenuItem extends javax.swing.JPanel {
         repaint();
     }
 
-    @SuppressWarnings("unchecked")
+    // @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated
     // <editor-fold defaultstate="collapsed" desc="Generated
     // <editor-fold defaultstate="collapsed" desc="Generated

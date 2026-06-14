@@ -30,7 +30,7 @@ public class Model_Menu {
                 "/imagens/" + iconName + "_cinza.png"));
     }
 
-    public ImageIcon selecionarIconeLaranja() {
+    public ImageIcon selecionarIconeSelected() {
         return new ImageIcon(getClass().getResource(
                 "/imagens/" + iconName + "_laranja.png"));
     }
