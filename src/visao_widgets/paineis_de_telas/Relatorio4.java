@@ -43,7 +43,7 @@ public class Relatorio4 extends javax.swing.JPanel {
         btGerarRelatorio = new javax.swing.JToggleButton();
         txtFieldAno = new javax.swing.JTextField();
 
-        setBackground(new java.awt.Color(220, 227, 238));
+//        setBackground(new java.awt.Color(220, 227, 238));
 
         jLabel4.setFont(new java.awt.Font("DIN Alternate", 0, 30)); // NOI18N
         jLabel4.setForeground(new java.awt.Color(255, 139, 0));
