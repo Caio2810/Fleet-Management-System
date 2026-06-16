@@ -120,7 +120,7 @@ public class AdicionarVeiculoPanel extends javax.swing.JPanel {
 
                 comboBoxMarca.setModel(new javax.swing.DefaultComboBoxModel<>(
                                 new String[] { "Selecione...", "Chevrolet", "Fiat", "Ford", "Honda", "Hyundai", "Citroën",
-                                                "Nissan", "Renault", "Toyota", "Volkswagen", "BYD", "Peugeot"  }));
+                                                "Nissan", "Renault", "Toyota", "Volkswagen", "BYD", "Peugeot", "Kia"  }));
 
                 jLabel5.setBackground(new java.awt.Color(255, 153, 0));
                 jLabel5.setFont(new java.awt.Font("Menlo", 1, 18)); // NOI18N
